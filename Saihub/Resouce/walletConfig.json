@@ -1,0 +1,27 @@
+[
+    {
+        "walletType":0,
+        "publicChain":"BTC",
+        "chainName":"Bitcoin",
+        "postCoin":"BTC",
+        "subCoin":"BTC",
+        "feeCoin": "BTC",
+        "tokenList":[
+            {
+                "tokenName":"BTC",
+                "tokenFullName":"BitCoin",
+                "places":8,
+                "tokenImageName":"wallet_btcIcon",
+                "address":""
+            },
+            {
+                "tokenName":"USDT",
+                "tokenFullName":"USDT-OMNI",
+                "places":8,
+                "tokenImageName":"wallet_usdtIcon",
+                "address":""
+            }
+        ]
+    }
+]
+

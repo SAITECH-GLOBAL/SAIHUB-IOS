@@ -1,0 +1,1 @@
+../../../Bitheri/Bitheri/Bech32/BTSegwitAddrData.h

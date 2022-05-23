@@ -1,0 +1,26 @@
+
+[
+    
+    {
+        "language": "English",
+        "symbol": "en",
+        "lang": "en"
+    },
+    {
+        "language": "中文",
+        "symbol": "zh-Hans",
+        "lang": "zh",
+    },
+
+    {
+        "language": "繁體中文",
+        "symbol": "zh-Hant",
+        "lang": "zh-Hant"
+    },
+    
+    {
+        "language": "русский",
+        "symbol": "ru",
+        "lang": "ru"
+    }
+]

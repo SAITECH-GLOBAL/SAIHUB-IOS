@@ -1,0 +1,21 @@
+[
+    {
+        "name": "美元(USD)",
+        "symbol": "$",
+        "key": "Usd",
+        "name_en": "US Dollar(USD)"
+    },
+    {
+        "name": "人民币(CNY)",
+        "symbol": "￥",
+        "key": "Cny",
+        "name_en": "Chinese Yuan(CNY)"
+    },
+    
+    {
+        "name": "卢布",
+        "symbol": "₽",
+        "key": "Rub",
+        "name_en": "RUB"
+    }
+]

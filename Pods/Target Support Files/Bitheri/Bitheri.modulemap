@@ -1,0 +1,6 @@
+module Bitheri {
+  umbrella header "Bitheri-umbrella.h"
+
+  export *
+  module * { export * }
+}

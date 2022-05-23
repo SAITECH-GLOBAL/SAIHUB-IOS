@@ -1,0 +1,195 @@
+PODS:
+  - AAChartKit (6.0.0)
+  - AFNetworking (4.0.1):
+    - AFNetworking/NSURLSession (= 4.0.1)
+    - AFNetworking/Reachability (= 4.0.1)
+    - AFNetworking/Security (= 4.0.1)
+    - AFNetworking/Serialization (= 4.0.1)
+    - AFNetworking/UIKit (= 4.0.1)
+  - AFNetworking/NSURLSession (4.0.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (4.0.1)
+  - AFNetworking/Security (4.0.1)
+  - AFNetworking/Serialization (4.0.1)
+  - AFNetworking/UIKit (4.0.1):
+    - AFNetworking/NSURLSession
+  - BigInt (5.2.0)
+  - Bitheri (1.7.0):
+    - CocoaLumberjack (~> 1.9.1)
+    - FMDB (~> 2.3)
+    - OpenSSL (= 1.0.1j)
+    - Reachability (~> 3.1.1)
+  - CocoaLumberjack (1.9.2):
+    - CocoaLumberjack/Extensions (= 1.9.2)
+  - CocoaLumberjack/Core (1.9.2)
+  - CocoaLumberjack/Extensions (1.9.2):
+    - CocoaLumberjack/Core
+  - CoreBitcoin (0.6.8.1):
+    - ISO8601DateFormatter
+    - OpenSSL-Universal (= 1.0.1.16)
+  - CryptoSwift (1.4.3)
+  - CWLateralSlide (1.6.5)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - HWPanModal (0.8.9)
+  - IQKeyboardManager (6.5.9)
+  - ISO8601DateFormatter (0.8)
+  - JCore (2.1.4-noidfa)
+  - JPush (3.2.4-noidfa):
+    - JCore (< 3.0.0, >= 2.0.0)
+  - libscrypt (1.21)
+  - lottie-ios (2.5.3)
+  - Masonry (1.1.0)
+  - OpenSSL (1.0.1j)
+  - OpenSSL-Universal (1.0.1.16)
+  - PromiseKit (6.15.3):
+    - PromiseKit/CorePromise (= 6.15.3)
+    - PromiseKit/Foundation (= 6.15.3)
+    - PromiseKit/UIKit (= 6.15.3)
+  - PromiseKit/CorePromise (6.15.3)
+  - PromiseKit/Foundation (6.15.3):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.15.3):
+    - PromiseKit/CorePromise
+  - Reachability (3.1.1)
+  - ReactiveObjC (3.1.1)
+  - Realm (10.11.0):
+    - Realm/Headers (= 10.11.0)
+  - Realm/Headers (10.11.0)
+  - SafeObject (0.0.1)
+  - SDAutoLayout (2.2.1)
+  - SDWebImage (5.12.3):
+    - SDWebImage/Core (= 5.12.3)
+  - SDWebImage/Core (5.12.3)
+  - secp256k1.c (0.1.2)
+  - SocketRocket (0.6.0)
+  - Starscream (4.0.4)
+  - web3swift (2.3.0):
+    - BigInt (~> 5.2)
+    - CryptoSwift (~> 1.4.0)
+    - libscrypt
+    - PromiseKit (~> 6.15.3)
+    - secp256k1.c (~> 0.1)
+    - Starscream (~> 4.0.4)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
+
+DEPENDENCIES:
+  - AAChartKit (from `https://github.com/AAChartModel/AAChartKit.git`)
+  - AFNetworking (~> 4.0.1)
+  - Bitheri (from `https://github.com/bither/bitheri.git`, branch `develop`)
+  - CoreBitcoin (~> 0.6.8.1)
+  - CWLateralSlide
+  - HWPanModal (~> 0.8.9)
+  - IQKeyboardManager (~> 6.5.6)
+  - JCore (= 2.1.4-noidfa)
+  - JPush (= 3.2.4-noidfa)
+  - lottie-ios (~> 2.5.0)
+  - Masonry
+  - OpenSSL (from `https://github.com/bither/OpenSSL.git`)
+  - Reachability (~> 3.1.1)
+  - ReactiveObjC
+  - Realm (~> 10.11.0)
+  - SafeObject
+  - SDAutoLayout
+  - SDWebImage
+  - SocketRocket
+  - web3swift (from `https://github.com/skywinder/web3swift.git`, branch `pull/libscrypt`)
+  - YYKit
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - AFNetworking
+    - BigInt
+    - CocoaLumberjack
+    - CoreBitcoin
+    - CryptoSwift
+    - CWLateralSlide
+    - FMDB
+    - HWPanModal
+    - IQKeyboardManager
+    - ISO8601DateFormatter
+    - JCore
+    - JPush
+    - libscrypt
+    - lottie-ios
+    - Masonry
+    - OpenSSL-Universal
+    - PromiseKit
+    - Reachability
+    - ReactiveObjC
+    - Realm
+    - SafeObject
+    - SDAutoLayout
+    - SDWebImage
+    - secp256k1.c
+    - SocketRocket
+    - Starscream
+    - YYKit
+
+EXTERNAL SOURCES:
+  AAChartKit:
+    :git: https://github.com/AAChartModel/AAChartKit.git
+  Bitheri:
+    :branch: develop
+    :git: https://github.com/bither/bitheri.git
+  OpenSSL:
+    :git: https://github.com/bither/OpenSSL.git
+  web3swift:
+    :branch: pull/libscrypt
+    :git: https://github.com/skywinder/web3swift.git
+
+CHECKOUT OPTIONS:
+  AAChartKit:
+    :commit: 8d0b2efcc80e9a1b9c61539a92b0571945c83ba2
+    :git: https://github.com/AAChartModel/AAChartKit.git
+  Bitheri:
+    :commit: 3778de8c561c1ecc9f501ab7fdb2209b494ad8c8
+    :git: https://github.com/bither/bitheri.git
+  OpenSSL:
+    :commit: b7ff9ed0245e2b5b1a212a1e86131487df4fc518
+    :git: https://github.com/bither/OpenSSL.git
+  web3swift:
+    :commit: 48dd636b31dfd5c4df78a700a0db54dff3021fe2
+    :git: https://github.com/skywinder/web3swift.git
+
+SPEC CHECKSUMS:
+  AAChartKit: dffacac3b641f2d2dc2fbf5f227350d22faee784
+  AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
+  BigInt: f668a80089607f521586bbe29513d708491ef2f7
+  Bitheri: a7f880e6373bbc2873091909403df351d72a44c4
+  CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
+  CoreBitcoin: 4ac6f6a61e543f08399c2fe57496d4fdcbaf74f9
+  CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
+  CWLateralSlide: 8939c8dea91a24e40d0793553118cb57cd67f64b
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  HWPanModal: 259f6916c706b3f63003a325ad1bdfbe913b0fdc
+  IQKeyboardManager: 241cc94ccabc9deb8f8bd7d12f00d73288d13ecc
+  ISO8601DateFormatter: 4551b6ce4f83185425f583b0b3feb3c7b59b942c
+  JCore: 2f15311e6889ab43ed5d629802ef793cac566465
+  JPush: 2ff11d3013b360bc1b7da16741027e88f12fe3e6
+  libscrypt: bc086c70477013b618f25655cd6dc80e45823a8e
+  lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  OpenSSL: 6cc604cf322dabb4695f3b7be882a47ed44a8146
+  OpenSSL-Universal: 85ef63bf81d0741b03c8719cd29685c37c59518d
+  PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
+  Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
+  ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
+  Realm: 39ff23f0f709cd4ed93eb47ee6593c2158945b38
+  SafeObject: 76bc8581221e14a6171013cd290f389d39e96038
+  SDAutoLayout: 8bf6b3bbc8b01f775d4defbb4fda2ace805461be
+  SDWebImage: 53179a2dba77246efa8a9b85f5c5b21f8f43e38f
+  secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
+  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  web3swift: d28ca92a90bce5a7125ddd023316f1c0b3c472ba
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
+
+PODFILE CHECKSUM: c9a4774ae1bec2032b9f591494fb5085dc9a5672
+
+COCOAPODS: 1.11.2
