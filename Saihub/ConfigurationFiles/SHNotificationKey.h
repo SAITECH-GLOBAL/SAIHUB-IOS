@@ -11,6 +11,8 @@
 /// 点击推送刷新
 static NSString *const kClickPushNoticeKey = @"kClickPushNoticeKey";
 
+static NSString *const ChangeWalletVc = @"changeWalletVc";
+
 /// 转账成功通知
 static NSString *const kTransferSuccessKey = @"kTransferSuccessKey";
 

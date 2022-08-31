@@ -52,6 +52,7 @@
 #pragma mark 按钮事件
 -(void)rightButtonAction:(UIButton *)btn
 {
+
     if ([SHKeyStorage shared].currentWalletModel.isNoSecret) {
         BOOL havePassWordVc = NO;
         for (UIViewController *subController in self.navigationController.viewControllers) {
@@ -78,6 +79,7 @@
 }
 -(void)bottomCheckButtonAction:(UIButton *)btn
 {
+
     [self ToSetgestures];
 }
 -(void)getfaceOrTouchType
@@ -153,6 +155,7 @@
 }
 #pragma mark -- 4.0 发送交易
 - (void)sendTransactionWithPara:(NSDictionary *)para {
+        
     MJWeakSelf
     [[SHWalletNetManager shared] sendBroadcastWithSignPara:para succes:^(NSString * _Nonnull hash) {
         //        [weakSelf storageLocalModelWithDict:@{t_hash : hash}];

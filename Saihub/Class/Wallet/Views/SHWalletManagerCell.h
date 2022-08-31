@@ -22,6 +22,9 @@ typedef NS_ENUM(NSInteger,SHManageWalletCellType) {
 
 @property (nonatomic,strong) UILabel *titleLabel;
 
+@property (nonatomic,strong) UILabel *rightValueLabel;
+
+
 @property (nonatomic,strong) UIImageView *arrowImageView;
 
 @property (nonatomic,strong) UISwitch *switchButton;

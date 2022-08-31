@@ -1,1 +1,0 @@
-../../../Target Support Files/CWLateralSlide/CWLateralSlide-umbrella.h

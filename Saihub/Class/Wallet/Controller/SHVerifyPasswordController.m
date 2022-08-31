@@ -146,29 +146,43 @@
         self.textFieldView.viewType = SHTextFieldViewTypeError;
         return;
     }
-
-    if (![self.textFieldView.textField.text isEqualToString:[SHKeyStorage shared].currentWalletModel.password]) {
-        self.setTipLabel.text = GCLocalizedString(@"wrong_passwrod");
-        self.textFieldView.viewType = SHTextFieldViewTypeError;
-        return;
-    }
-    
-    if (self.controllerType == SHVerifyPasswordControllerDelete) {
-        [[SHKeyStorage shared] deleteWalletWithModel:[SHKeyStorage shared].currentWalletModel];
-
-        SHCompleteView *completeView = [[SHCompleteView alloc]init];
-        completeView.completeViewType = CompleteViewSucceseType;
-        completeView.completeBlock = ^{
-            if (IsEmpty([SHKeyStorage shared].currentWalletModel)) {
-                KAppSetting.unlockedPassWord = @"";
-                KAppSetting.isOpenFaceID = @"";
+    if ([SHKeyStorage shared].isLNWallet) {
+        if (![self.textFieldView.textField.text isEqualToString:[SHKeyStorage shared].currentLNWalletModel.walletPassWord]) {
+            self.setTipLabel.text = GCLocalizedString(@"wrong_passwrod");
+            self.textFieldView.viewType = SHTextFieldViewTypeError;
+            return;
+        }
+    }else
+    {
+        if (![self.textFieldView.textField.text isEqualToString:[SHKeyStorage shared].currentWalletModel.password]) {
+            self.setTipLabel.text = GCLocalizedString(@"wrong_passwrod");
+            self.textFieldView.viewType = SHTextFieldViewTypeError;
+            return;
+        }
+        
+        if (self.controllerType == SHVerifyPasswordControllerDelete) {
+            [[SHKeyStorage shared] deleteWalletWithModel:[SHKeyStorage shared].currentWalletModel];
+            
+            if (IsEmpty([SHKeyStorage shared].currentWalletModel) && [SHKeyStorage shared].currentLNWalletModel) {//有ln钱包
+                if (self.changeWalletBlock) {
+                    self.changeWalletBlock();
+                }
             }
-            [[CTMediator sharedInstance].topViewController.navigationController popToRootViewControllerAnimated:YES];
-        };
-        [completeView presentInView:self.view];
+            SHCompleteView *completeView = [[SHCompleteView alloc]init];
+            completeView.completeViewType = CompleteViewSucceseType;
+            completeView.completeBlock = ^{
+                if (IsEmpty([SHKeyStorage shared].currentWalletModel)) {
+                    KAppSetting.unlockedPassWord = @"";
+                    KAppSetting.isOpenFaceID = @"";
+                }
+                [[CTMediator sharedInstance].topViewController.navigationController popToRootViewControllerAnimated:YES];
+            };
+            [completeView presentInView:self.view];
 
-        return;
+            return;
+        }
     }
+
     
     [self.navigationController popViewControllerAnimated:NO];
     

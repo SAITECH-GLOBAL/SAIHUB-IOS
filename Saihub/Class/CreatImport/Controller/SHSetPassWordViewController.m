@@ -296,6 +296,7 @@
     model.publicKey = btcWalletModel.publick;
     model.createTimestamp = [NSString getNowTimeTimestamp];
     model.hdAccountId = btcWalletModel.hdAccountId;
+    model.passPhrase = passPhrase;
     BTCMnemonic *mnemonic = [[BTCMnemonic alloc] initWithWords:[self.importKeyString componentsSeparatedByString:@" "] password:nil wordListType:BTCMnemonicWordListTypeEnglish];
     BTCKeychain *masterKey = mnemonic.keychain;
     //添加地址列表

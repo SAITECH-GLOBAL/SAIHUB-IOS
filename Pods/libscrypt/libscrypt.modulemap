@@ -1,6 +1,0 @@
-framework module libscrypt {
-  umbrella header "libscrypt.h"
-
-  export *
-  module * { export * }
-}

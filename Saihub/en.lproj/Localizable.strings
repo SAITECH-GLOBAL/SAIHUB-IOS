@@ -310,3 +310,51 @@
 "main_item_settings"="Settings";
 
 "Backup_delete_confirm_title"="Please backup the recovery phrase to prevent loss of assets.";
+"wallet_ln"="Lightning Wallet";
+
+
+"Refill_Local_Wallet"="Refill with Local Wallet";
+"Refill_External_Wallet"="Refill with External Wallet";
+"BTC_Wallet"="BTC Wallet";
+"Lightning_Network"="Lightning Network";
+"Expires_in"="Expires in";
+"Expired"="Expired";
+"Expires_in_With"="Expires in：";
+"Potential_Fee"="Potential Fee：";
+"Refill"="Refill";
+"Host" = "Host";
+"Add_Lightning"="Add Lightning";
+"Memo"="Memo";
+"Create_Invoice"="Create Invoice";
+"please_pay"="please pay：";
+"stas_for"="stas for：";
+"Please_backup_first" ="Backup first, please" ;
+"Lightning_payment"="Lightning payment";
+"Lightning_invoice"="Lightning invoice";
+
+"On-chain"="On-chain";
+
+
+"No_Wallet"="No Wallet";
+"Lightning_Settings"="Lightning Settings";
+"Import_Lightning"="Import Lightning";
+"Save"="Save";
+"Export"="Export";
+"Invoice/Lightning Address"="Invoice/Lightning Address";
+"Pay"="Pay";
+"Import_failed"="Import failed";
+"Import_successfully"="Import successfully";
+"Payment_successful"="Payment successful";
+"Saved"="Saved successfully";
+"sats"="sats";
+"Enter_memo"="Enter memo";
+"Scan_LNDHub"="Scan LNDHub";
+"Enter_LNDHub"="Enter LNDHub";
+"Enter_host"="Enter host";
+"Enter_wallet_name"="Enter wallet name";
+"Host_error"="Host error";
+
+"Wallet_Type"="Wallet Type";
+"Lightning_Address"="Lightning Address";
+"input_paste_hostUrl"="input paste hostUrl";
+"Select_type"="Select type";

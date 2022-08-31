@@ -40,7 +40,7 @@
         make.height.mas_equalTo(319 *FitWidth);
     }];
     
-    UIImageView *qrCodeImageView = [[UIImageView alloc]initWithImage:[JLQRCodeTool qrcodeImageWithInfo:self.address withSize:193 *FitWidth]];
+    UIImageView *qrCodeImageView = [[UIImageView alloc]initWithImage:[JLQRCodeTool qrcodeImageWithInfo:IsEmpty(self.address)?[SHKeyStorage shared].currentWalletModel.address:self.address withSize:193 *FitWidth]];
     self.qrCodeImageView = qrCodeImageView;
     [receiveView addSubview:qrCodeImageView];
     [qrCodeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -51,7 +51,7 @@
     
     YYLabel *addressLabel = [[YYLabel alloc]init];
     self.addressLabel = addressLabel;
-    addressLabel.text = [self.address formatAddressStrLeft:6 right:6];
+    addressLabel.text = [IsEmpty(self.address)?[SHKeyStorage shared].currentWalletModel.address:self.address formatAddressStrLeft:6 right:6];
     addressLabel.textColor = SHTheme.agreeTipsLabelColor;
     addressLabel.font = kCustomMontserratRegularFont(14);
     addressLabel.textContainerInset = UIEdgeInsetsMake(0, 0, 0, 28);
@@ -110,7 +110,7 @@
         make.size.mas_equalTo(CGSizeMake(209, 52));
     }];
     
-    if ([SHKeyStorage shared].currentWalletModel.subAddressList.count == 1 ) {
+    if ([SHKeyStorage shared].currentWalletModel.subAddressList.count == 1 ||self.isLnAddress ) {
         refreshLabel.hidden = YES;
         refreshImageView.hidden = YES;
     }
@@ -119,7 +119,7 @@
 #pragma mark -- 复制地址
 - (void)copyAddressClick {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    [pasteboard setString:[SHKeyStorage shared].currentWalletModel.address];
+    [pasteboard setString:IsEmpty(self.address)?[SHKeyStorage shared].currentWalletModel.address:self.address];
     [MBProgressHUD showSuccess:GCLocalizedString(@"copy_address_success") toView:self.view];
 }
 
@@ -229,7 +229,7 @@
     }];
     
     UILabel *addressLabel = [[UILabel alloc]init];
-    addressLabel.text = [SHKeyStorage shared].currentWalletModel.address;
+    addressLabel.text = IsEmpty(self.address)?[SHKeyStorage shared].currentWalletModel.address:self.address;
     addressLabel.textColor = SHTheme.agreeTipsLabelColor;
     addressLabel.font = kCustomMontserratRegularFont(12);
     addressLabel.textAlignment = NSTextAlignmentCenter;

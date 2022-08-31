@@ -20,7 +20,8 @@
 #import "SHWalletViewModel.h"
 #import "SHRefreshHeader.h"
 #import "SHTransferViewController.h"
-
+#import "SHBottomSelectViewController.h"
+#import "SHCreatLNWalletViewController.h"
 @interface SHWalletController () <UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -54,7 +55,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    self.headerView.walletNameLabel.text =[SHKeyStorage shared].currentWalletModel.name;
     self.headerView.addressLabel.text = [[SHKeyStorage shared].currentWalletModel.address formatAddressStrLeft:6 right:6];
 }
 
@@ -89,9 +90,15 @@
     self.viewModel = [[SHWalletViewModel alloc]init];
     
     [self addRACObserve];
-    
-}
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectLocationWalletToTrading:) name:@"SelectLocationWalletToTradingKey" object:nil];
 
+}
+- (void) selectLocationWalletToTrading:(NSNotification *)note{
+    SHTransferViewController *transferVc = [[SHTransferViewController alloc]init];
+    transferVc.address = [SHKeyStorage shared].currentLNWalletModel.btcAddress;
+    transferVc.tokenModel = [SHKeyStorage shared].currentWalletModel.tokenList[0];
+    [self.navigationController pushViewController:transferVc animated:YES];
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [SHKeyStorage shared].currentWalletModel.tokenList.count;
 }
@@ -110,9 +117,50 @@
 
 #pragma mark -- 1.0 切换抽屉
 - (void)leftButtonClick {
+    
     CWLateralSlideConfiguration *config = [CWLateralSlideConfiguration defaultConfiguration];
     config.distance = kScreenWidth *0.8;
     SHAddWalletController *personalVc = [[SHAddWalletController alloc]init];
+
+    personalVc.addWalletClickBlock = ^(NSInteger addType){
+        if (addType == 1) {
+            SHBottomSelectViewController *selectVc = [[SHBottomSelectViewController alloc]init];
+            selectVc.titleArray = @[GCLocalizedString(@"BTC_Wallet"),GCLocalizedString(@"Lightning_Network")];
+            [self presentPanModal:selectVc];
+            selectVc.selectTitleBlock = ^(NSString * _Nonnull select, NSInteger index) {
+                if (index == 0) {
+                    if ([SHWalletModel allObjects].count >=10) {
+                        [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                        return;
+                    }
+                    [self.navigationController pushViewController:[SHSetWalletPassWordViewController new] animated:YES];
+                }else
+                {
+                    if ([SHLNWalletModel allObjects].count >=10) {
+                        [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                        return;
+                    }
+                    [self.navigationController pushViewController:[SHCreatLNWalletViewController new] animated:YES];
+                }
+            };
+        }else if (addType == 2)
+        {
+            if ([SHWalletModel allObjects].count >=10) {
+                [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                return;
+            }
+            [self.navigationController pushViewController:[SHSetWalletPassWordViewController new] animated:YES];
+            
+        }else if (addType == 3)
+        {
+            if ([SHLNWalletModel allObjects].count >=10) {
+                [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                return;
+            }
+            [self.navigationController pushViewController:[SHCreatLNWalletViewController new] animated:YES];
+        }
+
+    };
     SHNavigationController *nav = [[SHNavigationController alloc]initWithRootViewController:personalVc];
     [self cw_showDrawerViewController:nav animationType:CWDrawerAnimationTypeMask configuration:config];
 }

@@ -364,3 +364,53 @@
 " etc."=" 等.";
 "networkErrorTitle" = "刷新";
 "Backup_delete_confirm_title"="请确认备份助记词，防止资产丢失。";
+"wallet_ln"="闪电钱包";
+
+
+"Refill_Local_Wallet"="本地钱包";
+"Refill_External_Wallet"="外部钱包";
+"BTC_Wallet"="链上钱包";
+"Lightning_Network"="闪电网络";
+"Expires_in"="有效期";
+"Expired"="已过期";
+"Expires_in_With"="有效期：";
+"Potential_Fee"="潜在费用：";
+"Refill"="钱包充值";
+"Host" = "节点";
+"Add_Lightning"="添加闪电钱包";
+"Memo"="备注";
+"Create_Invoice"="创建支票";
+"please_pay"="请支付：";
+"stas_for"="支付给：";
+"Please_backup_first" ="请先备份" ;
+"Lightning_invoice"="闪电支票";
+"On-chain"="链上充值";
+
+
+"No_Wallet"="无本地钱包";
+"Lightning_Settings"="闪电钱包设置";
+"Import_Lightning"="导入闪电钱包";
+"Save"="保存";
+"Export"="导出";
+"Invoice/Lightning Address"="Invocie/闪电地址";
+"Pay"="支付";
+"Import_failed"="导入失败";
+"Import_successfully"="导入成功";
+"Payment_successful"="支付成功";
+"Saved"="保存成功";
+"sats"="聪";
+"Enter_memo"="请输入备注";
+"Scan_LNDHub"="扫描LNDHub";
+"Enter_LNDHub"="请输入LNDHub";
+"Enter_host"="请输入Host";
+"Enter_wallet_name"="请输入名称";
+"Host_error"="host节点错误";
+
+
+"Wallet_Type"="选择类型";
+"Lightning_Address"="闪电钱包地址";
+"input_paste_hostUrl"="输入或粘贴节点连接";
+"Select_type"="选择类型";
+
+
+

@@ -1,1 +1,0 @@
-../../../Bitheri/Bitheri/Script/BTScript.h

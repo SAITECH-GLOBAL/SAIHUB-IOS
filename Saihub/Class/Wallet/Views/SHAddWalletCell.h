@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SHLNWalletModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SHAddWalletCell : UITableViewCell
@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isEmpty;
 
 @property (nonatomic, strong) SHWalletModel *walletModel;
+
+@property (nonatomic, strong) SHLNWalletModel *walletLNModel;
+
+@property (nonatomic, strong) UIImageView *backGroundImageView;
 
 @end
 

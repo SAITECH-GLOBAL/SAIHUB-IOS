@@ -35,6 +35,18 @@
     }
     return _titleLabel;
 }
+-(UILabel *)rightValueLabel
+{
+    if (_rightValueLabel == nil) {
+        _rightValueLabel = [[UILabel alloc]init];
+        _rightValueLabel.text = @"--";
+        _rightValueLabel.hidden = YES;
+        _rightValueLabel.textColor = SHTheme.appBlackColor;
+        _rightValueLabel.font = kCustomMontserratRegularFont(14);
+        [self.containerView addSubview:_rightValueLabel];
+    }
+    return _rightValueLabel;
+}
 
 - (UIImageView *)arrowImageView {
     if (_arrowImageView == nil) {
@@ -82,6 +94,11 @@
     
     [self.arrowImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-16);
+        make.centerY.mas_equalTo(0);
+    }];
+    
+    [self.rightValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-35);
         make.centerY.mas_equalTo(0);
     }];
     

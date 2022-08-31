@@ -15,7 +15,6 @@
 
 @property (nonatomic,strong) UILabel *titleLabel;
 
-@property (nonatomic,strong) UILabel *subTitleLabel;
 
 
 @property (nonatomic,strong) UIButton *sureButton;
@@ -145,6 +144,18 @@
     return _subTitleLabel;
 }
 
+- (UITextField *)walletNameTextField {
+    if (_walletNameTextField == nil) {
+        _walletNameTextField = [[UITextField alloc]init];
+        _walletNameTextField.textColor = SHTheme.textColor;
+        _walletNameTextField.font = kCustomMontserratRegularFont(14);
+        _walletNameTextField.textAlignment = NSTextAlignmentLeft;
+        [_walletNameTextField addTarget:self action:@selector(textFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+        [self.alertView addSubview:_walletNameTextField];
+    }
+    return _walletNameTextField;
+}
+
 - (UIButton *)sureButton {
     if (_sureButton == nil) {
         _sureButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -193,6 +204,11 @@
         [self.alertView addSubview:_clooseButton];
     }
     return _clooseButton;
+}
+- (void)textFieldChanged:(UITextField *)textField {
+    if ([textField isEqual:self.walletNameTextField] && textField.text.length >=20) {
+        textField.text = [textField.text substringToIndex:20];
+    }
 }
 #pragma mark -- 标题 + 内容
 - (instancetype)initWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock cancelTitle:(NSString *)cancelTitle cancelBlock:(alertCancelBlock)cancelBlock {
@@ -246,6 +262,82 @@
                 make.width.mas_equalTo(223);
                 make.height.mas_equalTo(40*FitHeight);
                 make.top.equalTo(self.subTitleLabel.mas_bottom).offset(24);
+            }];
+            [self layoutIfNeeded];
+            [self.alertView setupAutoHeightWithBottomView:self.sureButton bottomMargin:30];
+        }
+        
+        self.alertView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+        [UIView animateWithDuration:0.3 animations:^{
+            self.alertView.transform = CGAffineTransformMakeScale(1, 1);
+            self.alpha = 1;
+        } completion:^(BOOL finished) {
+
+        }];
+        [self layoutIfNeeded];
+        [self.sureButton setBackgroundImage:[UIImage gradientImageWithBounds:self.sureButton.bounds andColors:@[SHTheme.passwordInputColor,SHTheme.agreeButtonColor] andGradientType:GradientDirectionRightToLeft] forState:UIControlStateNormal];
+
+
+    }
+    return self;
+}
+/// 修改钱包名称标题 + 内容
+- (instancetype)initChangeWalletNameWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock cancelTitle:(NSString *)cancelTitle cancelBlock:(alertCancelBlock)cancelBlock
+{
+    if (self = [super init]) {
+        self.sureBlock = sureBlock;
+        //如果有在self.view中添加的
+        [self traverseRemoveWithView:[CTMediator sharedInstance].topViewController.view];
+        //在keywindow中移除
+        NSEnumerator *enumerator = [KeyWindow.subviews objectEnumerator];
+        for (UIView *subView in enumerator) {
+            if ([subView isKindOfClass:[SHAlertView class]]) {
+                [subView removeFromSuperview];
+            }
+        }
+        self.frame = kSCREEN;
+        self.backgroundView.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.4];
+        self.backgroundView.userInteractionEnabled = YES;
+        
+
+        self.alertView.sd_layout.leftSpaceToView(self.backgroundView, 39*FitWidth).rightSpaceToView(self.backgroundView, 39*FitWidth).centerYIs(self.centerY - 40*FitHeight).heightIs(100*FitHeight);
+        
+        self.clooseButton.sd_layout.rightSpaceToView(self.alertView, 10*FitWidth).topSpaceToView(self.alertView, 10*FitHeight).widthIs(20*FitHeight).heightIs(20*FitHeight);
+        
+        self.titleLabel.text = title;
+        self.titleLabel.font = kCustomMontserratMediumFont(24);
+        [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(25);
+            make.right.mas_equalTo(-25);
+            make.top.equalTo(self.alertView.mas_top).offset(24);
+        }];
+        self.walletNameTextField.placeholder = alert;
+        [self.walletNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(25);
+            make.right.mas_equalTo(-25);
+            make.top.equalTo(self.titleLabel.mas_bottom).offset(15);
+            make.height.mas_equalTo(46);
+        }];
+        UIView *lineView = [[UIView alloc]init];
+        [self.alertView addSubview:lineView];
+        lineView.backgroundColor = SHTheme.appBlackColor;
+        lineView.alpha = 0.12;
+        lineView.sd_layout.leftEqualToView(self.walletNameTextField).rightEqualToView(self.walletNameTextField).topSpaceToView(self.walletNameTextField, 0).heightIs(1);
+        if (!IsEmpty(cancelTitle)) {
+            [self.sureButton setTitle:sureTitle forState:UIControlStateNormal];
+            self.sureButton.sd_layout.rightSpaceToView(self.alertView, 20*FitWidth).topSpaceToView(lineView, 24*FitHeight).widthIs(117*FitWidth).heightIs(40*FitHeight);
+            [self.cancelButton setTitle:cancelTitle forState:UIControlStateNormal];
+            self.cancelButton.sd_layout.leftSpaceToView(self.alertView, 20*FitWidth).topSpaceToView(lineView, 24*FitHeight).widthIs(117*FitWidth).heightIs(40*FitHeight);
+            [self layoutIfNeeded];
+            [self.alertView setupAutoHeightWithBottomView:self.cancelButton bottomMargin:30];
+        }else
+        {
+            [self.sureButton setTitle:sureTitle forState:UIControlStateNormal];
+            [self.sureButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.centerX.equalTo(self.alertView.mas_centerX);
+                make.width.mas_equalTo(223);
+                make.height.mas_equalTo(40*FitHeight);
+                make.top.equalTo(lineView.mas_bottom).offset(24);
             }];
             [self layoutIfNeeded];
             [self.alertView setupAutoHeightWithBottomView:self.sureButton bottomMargin:30];
@@ -470,17 +562,20 @@
     if (self.privacySureBlock) {
         self.privacySureBlock();
     }
-    
+    [self removeAlertView];
     if (self.sureBlock) {
         if (self.nativeSegWitButton.selected||self.nestedSegWitButton.selected) {
             self.sureBlock(self.nestedSegWitButton.selected?@"1":@"0");
-        }else
+        }else if (self.walletNameTextField.text)
+        {
+            self.sureBlock(self.walletNameTextField.text);
+        }
+        else
         {
             self.sureBlock(@"");
         }
     }
     
-    [self removeAlertView];
 }
 
 #pragma mark -- 取消
@@ -497,6 +592,7 @@
 }
 
 - (void)removeAlertView {
+    self.alertView.alpha = 0;
     [UIView animateWithDuration:0.3 animations:^{
         self.alertView.transform = CGAffineTransformMakeScale(0.01, 0.01);
         self.alpha = 0;

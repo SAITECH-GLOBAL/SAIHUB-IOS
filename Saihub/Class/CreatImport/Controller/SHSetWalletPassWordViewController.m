@@ -12,6 +12,8 @@
 @interface SHSetWalletPassWordViewController ()
 @property (nonatomic, strong) UILabel *walletNameTipsLabel;
 @property (nonatomic, strong) UILabel *walletNameValueLabel;
+@property (nonatomic, strong) UIButton *walletNameChangeButton;
+
 @property (nonatomic, strong) UILabel *setPassTipsLabel;
 @property (nonatomic, strong) TGTextField *setPassTf;
 @property (nonatomic, strong) UIButton *setSeeOrHidderButton;
@@ -27,8 +29,8 @@
 @property (nonatomic, strong) UIButton *nestedSegWitButton;
 @property (nonatomic, strong) UILabel *nestedSegWitTipsLabel;
 @property (nonatomic, strong) UIImageView *nestedSegWitImageView;
-@property (nonatomic, strong) UIButton *agreeSelectButton;
-@property (nonatomic, strong) UILabel *agreeLabel;
+//@property (nonatomic, strong) UIButton *agreeSelectButton;
+//@property (nonatomic, strong) UILabel *agreeLabel;
 @property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) UIButton *importButton;
 @property (nonatomic, strong) SHPasswordStrength *passwordStrengthView;
@@ -43,6 +45,7 @@
     [super viewDidLoad];
     self.titleLabel.text = GCLocalizedString(@"add_wallet");
     [self layoutScale];
+    [self nativeSegWitButtonAction:self.nativeSegWitButton];
     // Do any additional setup after loading the view.
 }
 #pragma mark 布局页面
@@ -50,8 +53,9 @@
 {
     self.walletNameTipsLabel.sd_layout.leftSpaceToView(self.view, 20*FitWidth).topSpaceToView(self.navBar, 24*FitHeight).heightIs(22*FitHeight);
     [self.walletNameTipsLabel setSingleLineAutoResizeWithMaxWidth:350*FitWidth];
-    self.walletNameValueLabel.sd_layout.rightSpaceToView(self.view, 20*FitWidth).centerYEqualToView(self.walletNameTipsLabel).heightIs(22*FitHeight);
-    [self.walletNameValueLabel setSingleLineAutoResizeWithMaxWidth:350*FitWidth];
+    self.walletNameValueLabel.sd_layout.rightSpaceToView(self.view, 40*FitWidth).centerYEqualToView(self.walletNameTipsLabel).heightIs(22*FitHeight);
+    [self.walletNameValueLabel setSingleLineAutoResizeWithMaxWidth:110*FitWidth];
+    self.walletNameChangeButton.sd_layout.rightSpaceToView(self.view, 20*FitWidth).centerYEqualToView(self.walletNameValueLabel).widthIs(110*FitWidth).heightIs(40*FitHeight);
     self.setPassTipsLabel.sd_layout.leftEqualToView(self.walletNameTipsLabel).topSpaceToView(self.walletNameTipsLabel, 24*FitHeight).heightIs(22*FitHeight);
     [self.setPassTipsLabel setSingleLineAutoResizeWithMaxWidth:350*FitWidth];
 //    self.thirdIntensityView.sd_layout.rightSpaceToView(self.view, 20*FitWidth).centerYEqualToView(self.setPassTipsLabel).widthIs(16*FitWidth).heightIs(4*FitHeight);
@@ -82,10 +86,10 @@
     [self.nestedSegWitTipsLabel setSingleLineAutoResizeWithMaxWidth:300*FitWidth];
     self.nestedSegWitImageView.sd_layout.rightSpaceToView(self.nestedSegWitButton, 16*FitWidth).centerYEqualToView(self.nestedSegWitButton).widthIs(20*FitWidth).heightEqualToWidth();
     
-    self.agreeLabel.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.nestedSegWitButton, 42*FitHeight).heightIs(22*FitHeight);
-    [self.agreeLabel setSingleLineAutoResizeWithMaxWidth:350*FitWidth];
-    self.agreeSelectButton.sd_layout.rightSpaceToView(self.agreeLabel, 7*FitWidth).centerYEqualToView(self.agreeLabel).widthIs(20*FitWidth).heightEqualToWidth();
-    self.createButton.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.agreeSelectButton, 25*FitHeight).widthIs(335*FitWidth).heightIs(52*FitHeight);
+//    self.agreeLabel.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.nestedSegWitButton, 42*FitHeight).heightIs(22*FitHeight);
+//    [self.agreeLabel setSingleLineAutoResizeWithMaxWidth:350*FitWidth];
+//    self.agreeSelectButton.sd_layout.rightSpaceToView(self.agreeLabel, 7*FitWidth).centerYEqualToView(self.agreeLabel).widthIs(20*FitWidth).heightEqualToWidth();
+    self.createButton.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.nestedSegWitButton, 90*FitHeight).widthIs(335*FitWidth).heightIs(52*FitHeight);
     self.importButton.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.createButton, 0).widthIs(335*FitWidth).heightIs(52*FitHeight);
     [self.view layoutIfNeeded];
     [self.createButton setBackgroundImage:[UIImage gradientImageWithBounds:self.createButton.bounds andColors:@[SHTheme.buttonUnselectColor,SHTheme.buttonUnselectColor] andGradientType:GradientDirectionRightToLeft] forState:UIControlStateNormal];
@@ -133,11 +137,11 @@
     [self layoutStartButtonColor];
 
 }
--(void)agreeSelectButtonAction:(UIButton *)btn
-{
-    btn.selected = !btn.selected;
-    [self layoutStartButtonColor];
-}
+//-(void)agreeSelectButtonAction:(UIButton *)btn
+//{
+//    btn.selected = !btn.selected;
+//    [self layoutStartButtonColor];
+//}
 -(void)createButtonAction:(UIButton *)btn
 {
     if (![self.setPassTf.text isEqualToString:self.resetPassTf.text]) {
@@ -163,7 +167,7 @@
 -(void)importButtonAction:(UIButton *)btn
 {
     SHImPortWalletViewController *imPortWalletViewController = [SHImPortWalletViewController new];
-    imPortWalletViewController.walletName = [NSString stringWithFormat:@"BTC-%@",[self randomStringWithLength:4]];
+    imPortWalletViewController.walletName = [NSString stringWithFormat:@"BTC-%@",[NSString randomStringWithLength:4]];
     [self.navigationController pushViewController:imPortWalletViewController animated:YES];
 }
 - (void)tapGesture :(UITapGestureRecognizer *)tap
@@ -218,7 +222,7 @@
 }
 -(void)layoutStartButtonColor
 {
-    if (!IsEmpty(self.setPassTf.text)&&!IsEmpty(self.resetPassTf.text)&&(self.nativeSegWitButton.selected||self.nestedSegWitButton.selected)&&self.agreeSelectButton.selected) {
+    if (!IsEmpty(self.setPassTf.text)&&!IsEmpty(self.resetPassTf.text)&&(self.nativeSegWitButton.selected||self.nestedSegWitButton.selected)) {
         [self.createButton setBackgroundImage:[UIImage gradientImageWithBounds:self.createButton.bounds andColors:@[SHTheme.passwordInputColor,SHTheme.agreeButtonColor] andGradientType:GradientDirectionRightToLeft] forState:UIControlStateNormal];
         self.createButton.enabled = YES;
     }else
@@ -227,13 +231,19 @@
         self.createButton.enabled = NO;
     }
 }
--(NSString *)randomStringWithLength:(NSInteger)len {
-     NSString *letters = @"abcdefghijklmnopqrstuvwxyz";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
-    for (NSInteger i = 0; i < len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform([letters length])]];
-    }
-    return randomString;
+-(void)walletNameChangeButtonAction:(UIButton *)btn
+{
+    MJWeakSelf;
+    SHAlertView *alertView = [[SHAlertView alloc]initChangeWalletNameWithTitle:GCLocalizedString(@"wallet_name") alert:self.walletNameValueLabel.text sureTitle:GCLocalizedString(@"Yes") sureBlock:^(NSString * _Nonnull str) {
+        if (!IsEmpty(str)) {
+            self.walletNameValueLabel.text = str;
+        }
+    } cancelTitle:GCLocalizedString(@"No") cancelBlock:^(NSString * _Nonnull str) {
+        
+    }];
+    alertView.subTitleLabel.textColor = SHTheme.errorTipsRedColor;
+    alertView.clooseButton.hidden = YES;
+    [KeyWindow addSubview:alertView];
 }
 #pragma mark 懒加载
 -(UILabel *)walletNameTipsLabel
@@ -253,10 +263,21 @@
         _walletNameValueLabel = [[UILabel alloc]init];
         _walletNameValueLabel.font = kCustomMontserratMediumFont(20);
         _walletNameValueLabel.textColor = SHTheme.walletNameLabelColor;
-        _walletNameValueLabel.text = [NSString stringWithFormat:@"BTC-%@",[self randomStringWithLength:4]];
+        _walletNameValueLabel.text = [NSString stringWithFormat:@"BTC-%@",[NSString randomStringWithLength:4]];
         [self.view addSubview:_walletNameValueLabel];
     }
     return _walletNameValueLabel;
+}
+-(UIButton *)walletNameChangeButton
+{
+    if (_walletNameChangeButton == nil) {
+        _walletNameChangeButton = [[UIButton alloc]init];
+        [_walletNameChangeButton setImage:[UIImage imageNamed:@"setWalletPass_walletNameChangeButton"] forState:UIControlStateNormal];
+        _walletNameChangeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        [_walletNameChangeButton addTarget:self action:@selector(walletNameChangeButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:_walletNameChangeButton];
+    }
+    return _walletNameChangeButton;
 }
 -(UILabel *)setPassTipsLabel
 {
@@ -302,27 +323,27 @@
     }
     return _nativeSegWitTipsLabel;
 }
--(UILabel *)agreeLabel
-{
-    if (_agreeLabel == nil) {
-        _agreeLabel = [[UILabel alloc]init];
-        _agreeLabel.font = kCustomMontserratRegularFont(12);
-        _agreeLabel.textColor = SHTheme.agreeTipsLabelColor;
-        _agreeLabel.userInteractionEnabled = YES;
-        NSMutableAttributedString * content = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@",GCLocalizedString(@"privacy_tip"),GCLocalizedString(@"privacy_service")]];
-        [content addAttribute:NSForegroundColorAttributeName value:SHTheme.agreeTipsLabelColor range:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")]];
-        [content addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")]];
-        //设置高亮色和点击事件
-        [content setTextHighlightRange:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")] color:SHTheme.agreeButtonColor backgroundColor:[UIColor clearColor] tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
-            NSLog(@"24234");
-        }];
-        _agreeLabel.attributedText = content;
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
-        [_agreeLabel addGestureRecognizer:tap];
-        [self.view addSubview:_agreeLabel];
-    }
-    return _agreeLabel;
-}
+//-(UILabel *)agreeLabel
+//{
+//    if (_agreeLabel == nil) {
+//        _agreeLabel = [[UILabel alloc]init];
+//        _agreeLabel.font = kCustomMontserratRegularFont(12);
+//        _agreeLabel.textColor = SHTheme.agreeTipsLabelColor;
+//        _agreeLabel.userInteractionEnabled = YES;
+//        NSMutableAttributedString * content = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@",GCLocalizedString(@"privacy_tip"),GCLocalizedString(@"privacy_service")]];
+//        [content addAttribute:NSForegroundColorAttributeName value:SHTheme.agreeTipsLabelColor range:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")]];
+//        [content addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")]];
+//        //设置高亮色和点击事件
+//        [content setTextHighlightRange:[[content string] rangeOfString:GCLocalizedString(@"privacy_service")] color:SHTheme.agreeButtonColor backgroundColor:[UIColor clearColor] tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
+//            NSLog(@"24234");
+//        }];
+//        _agreeLabel.attributedText = content;
+//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
+//        [_agreeLabel addGestureRecognizer:tap];
+//        [self.view addSubview:_agreeLabel];
+//    }
+//    return _agreeLabel;
+//}
 
 -(TGTextField *)setPassTf
 {
@@ -422,17 +443,17 @@
     }
     return _nestedSegWitButton;
 }
--(UIButton *)agreeSelectButton
-{
-    if (_agreeSelectButton == nil) {
-        _agreeSelectButton = [[UIButton alloc]init];
-        [_agreeSelectButton setImage:[UIImage imageNamed:@"agreeMentVc_selectButton_black_normal"] forState:UIControlStateNormal];
-        [_agreeSelectButton setImage:[UIImage imageNamed:@"agreeMentVc_selectButton_select"] forState:UIControlStateSelected];
-        [_agreeSelectButton addTarget:self action:@selector(agreeSelectButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:_agreeSelectButton];
-    }
-    return _agreeSelectButton;
-}
+//-(UIButton *)agreeSelectButton
+//{
+//    if (_agreeSelectButton == nil) {
+//        _agreeSelectButton = [[UIButton alloc]init];
+//        [_agreeSelectButton setImage:[UIImage imageNamed:@"agreeMentVc_selectButton_black_normal"] forState:UIControlStateNormal];
+//        [_agreeSelectButton setImage:[UIImage imageNamed:@"agreeMentVc_selectButton_select"] forState:UIControlStateSelected];
+//        [_agreeSelectButton addTarget:self action:@selector(agreeSelectButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+//        [self.view addSubview:_agreeSelectButton];
+//    }
+//    return _agreeSelectButton;
+//}
 -(UIButton *)createButton
 {
     if (_createButton == nil) {

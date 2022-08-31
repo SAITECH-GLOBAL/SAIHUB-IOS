@@ -74,6 +74,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// switch 开启颜色
 @property (nonatomic, strong, readonly) UIColor *switchOnColor;
 
+/// switch 禁用颜色
+@property (nonatomic, strong, readonly) UIColor *switchDisableColor;
+
 // 添加钱包按钮颜色 #ECF6F9
 @property (nonatomic, strong, readonly) UIColor *labelBackgroundColor;
 
@@ -85,6 +88,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 转入pending文字颜色  #026FED
 @property (nonatomic, strong, readonly) UIColor *pendingTextColor;
+
+
+/// ln钱包按钮文字颜色  #414141
+@property (nonatomic, strong, readonly) UIColor *lnWalletButtonColor;
+
+/// ln钱包按钮背景颜色  #fff0d6
+@property (nonatomic, strong, readonly) UIColor *lnWalletButtonBgColor;
+
+/// ln钱包invoicelist cell颜色  #E5F0FD
+@property (nonatomic, strong, readonly) UIColor *lnWalletInvoiceImageBgColor;
 
 @end
 

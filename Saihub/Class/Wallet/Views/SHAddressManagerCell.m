@@ -94,7 +94,7 @@
             make.centerY.equalTo(self.addressLabel);
         }];
         
-        if ([SHKeyStorage shared].currentWalletModel.importType == SHWalletImportTypePublicKey) {
+        if ([SHKeyStorage shared].currentWalletModel.importType == SHWalletImportTypePublicKey || [SHKeyStorage shared].currentWalletModel.passPhrase.length != 0) {
             self.exportButton.hidden = YES;
         }
     }

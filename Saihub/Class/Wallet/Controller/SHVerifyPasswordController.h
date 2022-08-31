@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger, SHVerifyPasswordControllerType) {
 };
 
 @interface SHVerifyPasswordController : SHBaseViewController
+@property (nonatomic, copy) void (^changeWalletBlock)(void);
 
 @property (nonatomic, assign) SHVerifyPasswordControllerType controllerType;
 

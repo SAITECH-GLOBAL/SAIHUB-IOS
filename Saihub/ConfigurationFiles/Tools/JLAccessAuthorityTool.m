@@ -8,9 +8,6 @@
 
 #import "JLAccessAuthorityTool.h"
 #import <Photos/Photos.h>
-#import <CoreLocation/CLLocationManager.h>
-#import <Contacts/Contacts.h>
-#import <AddressBook/AddressBook.h>
 
 @interface JLAccessAuthorityTool ()
 /**
@@ -36,44 +33,6 @@
     }
 }
 
-//授权麦克风
-+(BOOL)audioAuthAction {
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-        
-    }];
-    
-    if ([JLAccessAuthorityTool checkAudioStatus]) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
-
-//检查麦克风权限
-+(BOOL) checkAudioStatus{
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    
-    switch (authStatus) {
-        case AVAuthorizationStatusNotDetermined:
-            //没有询问是否开启麦克风
-            return NO;
-            break;
-        case AVAuthorizationStatusRestricted:
-            return NO;
-            break;
-        case AVAuthorizationStatusDenied:
-            //玩家未授权
-            return NO;
-            break;
-        case AVAuthorizationStatusAuthorized:
-            //玩家授权
-            return YES;
-            break;
-        default:
-            break;
-    }
-    
-}
 
 +(BOOL) checkVideoStatus{
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -119,34 +78,6 @@
     return NO;
 }
 
-//检查麦克风权限
-+ (BOOL) isOpenMicoAuthority{
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    switch (authStatus) {
-        case AVAuthorizationStatusNotDetermined:
-            //没有询问是否开启麦克风
-
-             [JLAccessAuthorityTool alertHint:[NSString stringWithFormat:@"请打开系统设置中\"隐私➝麦克风\"，允许\"%@\"使用您的麦克风。",App_name]];
-            return YES;
-            break;
-        case AVAuthorizationStatusRestricted:
-            //未授权，家长限制
-             [JLAccessAuthorityTool alertHint:[NSString stringWithFormat:@"请打开系统设置中\"隐私➝麦克风\"，允许\"%@\"使用您的麦克风。",App_name]];
-            return NO;
-            break;
-        case AVAuthorizationStatusDenied:
-             [JLAccessAuthorityTool alertHint:[NSString stringWithFormat:@"请打开系统设置中\"隐私➝麦克风\"，允许\"%@\"使用您的麦克风。",App_name]];
-            //玩家未授权
-            return NO;
-            break;
-        case AVAuthorizationStatusAuthorized:
-            //玩家授权
-            return YES;
-            break;
-        default:
-            break;
-    }
-}
 
 /**
  *  是否开启了相册权限
@@ -165,22 +96,6 @@
     }
 }
 
-/**
- *  是否开启了定位权限
- *  @return bool
- */
-+ (BOOL)isOpenLocationAuthority{
-    if ([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-        return YES;
-    }
-    
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
-        //弹出提示
-        [JLAccessAuthorityTool alertHint:[NSString stringWithFormat:@"请打开系统设置中\"隐私➝定位服务\"，允许\"%@\"使用您的位置。",App_name]];
-        return NO;
-    }
-    return YES;
-}
 
 /**
  *  提示打开权限
@@ -205,29 +120,5 @@
     [KeyWindow.rootViewController presentViewController:alertVc animated:YES completion:nil];
 }
 
-+(void)requestAuthorizationAddressBookWithBlock:(SucessedBlock)sucessedBlock
-{
-    // 判断是否授权
-    if(@available (iOS 9.0, *)){
-        if ([CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts] == CNAuthorizationStatusAuthorized){
-            sucessedBlock(YES);
-            return;//授权成功直接返回
-        }
-
-        if ([CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts] == CNAuthorizationStatusDenied) {
-            [JLAccessAuthorityTool alertHint:[NSString stringWithFormat:@"请打开系统设置中\"隐私➝通讯录\"，允许\"%@\"访问您的通讯录。",App_name]];
-        }
-        CNContactStore *store = [[CNContactStore alloc] init];
-        
-        [store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
-            if (granted) { // 授权成功
-                NSLog(@"授权成功");
-                sucessedBlock(YES);
-            } else {  // 授权失败
-                sucessedBlock(NO);
-            }
-        }];
-    }
-}
 
 @end

@@ -13,8 +13,6 @@
 
 @property (nonatomic,strong) UIImageView *backImageView;
 
-/// 钱包名
-@property (nonatomic,strong) UILabel *walletNameLabel;
 
 @property (nonatomic,strong) UIButton *qrCodeButton;
 

@@ -36,6 +36,13 @@ typedef NS_ENUM(NSUInteger, NetworkMethod) {
 /// @param params 参数
 
 - (NSURLSessionDataTask *)requestBaseUrlForCheckContractHttpWithPath:(NSString *)path withMethodType:(NetworkMethod)method withParams:(NSDictionary*)params result:(ResultBlock)block;
+
+/// baseUrlFor检查授权网络请求
+/// @param path 路径
+/// @param method 方式
+/// @param params 参数
+
+- (NSURLSessionDataTask *)requestBaseUrlForCheckContractHttpwithHeader:(NSDictionary*)Header WithPath:(NSString *)path withMethodType:(NetworkMethod)method withParams:(NSDictionary*)params result:(ResultBlock)block;
 /// 网络请求
 /// @param path 路径
 /// @param method 方式

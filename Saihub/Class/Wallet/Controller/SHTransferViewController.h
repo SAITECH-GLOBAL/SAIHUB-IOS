@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SHTransferViewController : SHBaseViewController
+@property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) SHWalletTokenModel *tokenModel;
 @end
 

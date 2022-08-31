@@ -9,7 +9,7 @@
 #import "SHAddWalletCell.h"
 #import "SHKeyStorage.h"
 #import <UIViewController+CWLateralSlide.h>
-
+#import "SHCreatLNWalletViewController.h"
 
 @interface SHAddWalletController () <UITableViewDelegate,UITableViewDataSource>
 
@@ -24,11 +24,17 @@
 /// 其余类型钱包数量
 @property (nonatomic, assign) NSInteger otherWalletCount;
 
+/// 其余类型钱包数量
+@property (nonatomic, assign) NSInteger lnWalletCount;
+
 /// 正常钱包集合
 @property (nonatomic, strong) RLMResults *walletResult;
 
 /// 观察者钱包集合
 @property (nonatomic, strong) RLMResults *watchWalletResult;
+
+/// ln钱包集合
+@property (nonatomic, strong) RLMResults *walletLNResult;
 
 @end
 
@@ -40,6 +46,11 @@
 
 - (RLMResults *)watchWalletResult {
     return [[SHWalletModel objectsWhere:[NSString stringWithFormat:@"importType == %zd OR importType == %zd",SHWalletImportTypeAddress,SHWalletImportTypePublicKey]] sortedResultsUsingKeyPath:@"createTimestamp" ascending:NO];
+}
+
+- (RLMResults *)walletLNResult {
+    NSLog(@"%@",[SHLNWalletModel allObjects]);
+    return IsEmpty([SHLNWalletModel allObjects])?nil: [[SHLNWalletModel allObjects] sortedResultsUsingKeyPath:@"createTimestamp" ascending:NO];
 }
 
 - (UITableView *)tableView {
@@ -75,6 +86,8 @@
     self.watchWalletCount = self.watchWalletResult.count;
     
     self.otherWalletCount = totalCount - self.watchWalletCount;
+    
+    self.lnWalletCount = self.walletLNResult.count;
     
     UILabel *titleLabel = [[UILabel alloc]init];
     titleLabel.text = GCLocalizedString(@"wallet_list");
@@ -139,7 +152,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -149,6 +162,13 @@
             return 1;
         }
         return self.otherWalletCount;
+    }
+    
+    if (section == 1) {
+        if (self.lnWalletCount == 0) {
+            return 1;
+        }
+        return self.lnWalletCount;
     }
     
     if (self.watchWalletCount == 0) {
@@ -162,13 +182,27 @@
 
     if (indexPath.section == 0) {
         cell.isEmpty = self.otherWalletCount == 0;
+    }else if (indexPath.section == 1) {
+        cell.isEmpty = self.lnWalletCount == 0;
     } else {
         cell.isEmpty = self.watchWalletCount == 0;
     }
-    
+    if (cell.isEmpty) {
+        cell.backGroundImageView.image = [UIImage imageNamed:@"addWallet_backgroundImage_empty"];
+    }else
+    {
+        if (indexPath.section == 1) {
+            cell.backGroundImageView.image = [UIImage imageNamed:@"addWallet_backgroundImage_ln"];
+        }else
+        {
+            cell.backGroundImageView.image = [UIImage imageNamed:@"addWallet_backgroundImage"];
+        }
+    }
     if (cell.isEmpty == NO) {
         if (indexPath.section == 0) {
             cell.walletModel = [self.walletResult objectAtIndex:indexPath.row];
+        }else if (indexPath.section == 1) {
+            cell.walletLNModel = [self.walletLNResult objectAtIndex:indexPath.row];
         } else {
             cell.walletModel = [self.watchWalletResult objectAtIndex:indexPath.row];
         }
@@ -180,14 +214,28 @@
     
     if (indexPath.section == 0) { // 正常钱包
         if (self.otherWalletCount == 0) { // 跳转到创建.导入
-            [self addWalletEvent];
+            if (self.addWalletClickBlock) {
+                self.addWalletClickBlock(2);
+            }
         } else { // 选中当前钱包
             [SHKeyStorage shared].currentWalletModel = [self.walletResult objectAtIndex:indexPath.row];
-            [self dismissViewControllerAnimated:YES completion:nil];
         }
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }else if (indexPath.section == 1) { // LN钱包
+        if (self.lnWalletCount == 0) { // 跳转到创建.导入
+            if (self.addWalletClickBlock) {
+                self.addWalletClickBlock(3);
+            }
+        } else { // 选中当前钱包
+            [SHKeyStorage shared].currentLNWalletModel = [self.walletLNResult objectAtIndex:indexPath.row];
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
     } else { // 观察者钱包
         if (self.watchWalletCount == 0) {
-            [self addWalletEvent];
+            if (self.addWalletClickBlock) {
+                self.addWalletClickBlock(2);
+            }
+            [self dismissViewControllerAnimated:YES completion:nil];
         } else {
             [SHKeyStorage shared].currentWalletModel = [self.watchWalletResult objectAtIndex:indexPath.row];
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -196,7 +244,7 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    NSArray *titles = @[GCLocalizedString(@"wallet_btc"),GCLocalizedString(@"wallet_ob")];
+    NSArray *titles = @[GCLocalizedString(@"wallet_btc"),GCLocalizedString(@"wallet_ln"),GCLocalizedString(@"wallet_ob")];
     
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.drawerWidth, 36)];
     headerView.backgroundColor = SHTheme.appWhightColor;
@@ -220,11 +268,10 @@
 
 #pragma mark -- 跳转到添加
 - (void)addWalletEvent {
-    if ([SHWalletModel allObjects].count >=10) {
-        [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
-        return;
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.addWalletClickBlock) {
+        self.addWalletClickBlock(1);
     }
-    [self cw_pushViewController:[SHSetWalletPassWordViewController new]];
 }
 
 @end

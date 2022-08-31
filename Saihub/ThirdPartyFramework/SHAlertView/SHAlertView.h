@@ -29,12 +29,21 @@ typedef void(^privacyCancelBlock)(void);
 @property (nonatomic,copy) privacySureBlock privacySureBlock;
 
 @property (nonatomic,copy) privacyCancelBlock privacyCancelBlock;
+
+@property (nonatomic,strong) UILabel *subTitleLabel;
+
+@property (nonatomic,strong) UITextField *walletNameTextField;
+
 /// 标题 + 内容
 - (instancetype)initWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock cancelTitle:(NSString *)cancelTitle cancelBlock:(alertCancelBlock)cancelBlock;
 /// 标题 + 内容 backUp
 - (instancetype)initBackUpWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock cancelTitle:(NSString *)cancelTitle cancelBlock:(alertCancelBlock)cancelBlock backUpBlock:(alertBackUpBlock)backUpBlock;
 /// 导入选择addressType
 - (instancetype)initSelectAdressTypeWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock;
+
+/// 修改钱包名称标题 + 内容
+- (instancetype)initChangeWalletNameWithTitle:(NSString *)title alert:(NSString *)alert sureTitle:(NSString *)sureTitle sureBlock:(alertSureBlock)sureBlock cancelTitle:(NSString *)cancelTitle cancelBlock:(alertCancelBlock)cancelBlock;
+
 @end
 
 NS_ASSUME_NONNULL_END

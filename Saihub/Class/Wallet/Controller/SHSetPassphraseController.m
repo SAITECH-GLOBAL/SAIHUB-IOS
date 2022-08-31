@@ -192,6 +192,7 @@
     model.mnemonic = [self.mnemonicArray componentsJoinedByString:@" "];
     model.password = self.passWord;
     model.publicKey = btcWalletModel.publick;
+    model.passPhrase = passWord;
     if ([self.mnemonicArray isEqualToArray:[[SHKeyStorage shared].currentWalletModel.mnemonic componentsSeparatedByString:@" "]]) {
         model.createTimestamp = [SHKeyStorage shared].currentWalletModel.createTimestamp;
     }else

@@ -20,6 +20,8 @@
 @property (nonatomic, strong) UITextView *inputTextView;
 @property (nonatomic, strong) UILabel *walletNameTipsLabel;
 @property (nonatomic, strong) UILabel *walletNameValueLabel;
+@property (nonatomic, strong) UIButton *walletNameChangeButton;
+
 @property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) WKWebView *wkWebView;
 
@@ -85,8 +87,10 @@
     self.inputTextView.sd_layout.leftSpaceToView(self.inputTVBackView, 12*FitWidth).topSpaceToView(self.inputTVBackView, 12*FitHeight).rightSpaceToView(self.inputTVBackView, 12*FitWidth).bottomSpaceToView(self.inputTVBackView, 12*FitHeight);
     self.walletNameTipsLabel.sd_layout.leftEqualToView(self.inputTVBackView).topSpaceToView(self.inputTVBackView, 24*FitHeight).heightIs(22*FitHeight);
     [self.walletNameTipsLabel setSingleLineAutoResizeWithMaxWidth:kWIDTH];
-    self.walletNameValueLabel.sd_layout.rightEqualToView(self.inputTVBackView).centerYEqualToView(self.walletNameTipsLabel).heightIs(22*FitHeight);
-    [self.walletNameValueLabel setSingleLineAutoResizeWithMaxWidth:kWIDTH];
+    self.walletNameValueLabel.sd_layout.rightSpaceToView(self.view, 40*FitWidth).centerYEqualToView(self.walletNameTipsLabel).heightIs(22*FitHeight);
+    [self.walletNameValueLabel setSingleLineAutoResizeWithMaxWidth:110*FitWidth];
+    self.walletNameChangeButton.sd_layout.rightSpaceToView(self.view, 20*FitWidth).centerYEqualToView(self.walletNameValueLabel).widthIs(110*FitWidth).heightIs(40*FitHeight);
+
     self.createButton.sd_layout.centerXEqualToView(self.view).widthIs(335*FitWidth).heightIs(52*FitHeight).topSpaceToView(self.walletNameTipsLabel, 88*FitHeight);
     [self.view layoutIfNeeded];
     [self.createButton setBackgroundImage:[UIImage gradientImageWithBounds:self.createButton.bounds andColors:@[SHTheme.buttonUnselectColor,SHTheme.buttonUnselectColor] andGradientType:GradientDirectionRightToLeft] forState:UIControlStateNormal];
@@ -115,7 +119,7 @@
                 SHAlertView *alertView = [[SHAlertView alloc]initSelectAdressTypeWithTitle:GCLocalizedString(@"Address Type") alert:@"" sureTitle:GCLocalizedString(@"import_desc") sureBlock:^(NSString * _Nonnull str) {
                     SHSetPassWordViewController *setPassWordViewController = [SHSetPassWordViewController new];
                     setPassWordViewController.importKeyString = self.inputTextView.text;
-                    setPassWordViewController.walletName = self.walletName;
+                    setPassWordViewController.walletName = self.walletNameValueLabel.text ;
                     setPassWordViewController.selectedNestedSegWitButton = [str isEqualToString:@"1"]?YES:NO;
                     [self.navigationController pushViewController:setPassWordViewController animated:YES];
                 }];
@@ -140,7 +144,7 @@
                 SHAlertView *alertView = [[SHAlertView alloc]initSelectAdressTypeWithTitle:GCLocalizedString(@"Address Type") alert:@"" sureTitle:GCLocalizedString(@"import_desc") sureBlock:^(NSString * _Nonnull str) {
                     SHSetPassWordViewController *setPassWordViewController = [SHSetPassWordViewController new];
                     setPassWordViewController.importKeyString = self.inputTextView.text;
-                    setPassWordViewController.walletName = self.walletName;
+                    setPassWordViewController.walletName = self.walletNameValueLabel.text;
                     setPassWordViewController.selectedNestedSegWitButton = [str isEqualToString:@"1"]?YES:NO;
                     [self.navigationController pushViewController:setPassWordViewController animated:YES];
                 }];
@@ -271,7 +275,7 @@
         }
     }
     
-    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithPubs:pubkeyArray WithPubDic:pubDic WithPubTitles:pubkeyTitleArray withWalletName:self.walletName];
+    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithPubs:pubkeyArray WithPubDic:pubDic WithPubTitles:pubkeyTitleArray withWalletName:self.walletNameValueLabel.text];
     [self getMutPubAddressWithPubs:pubkeyForMutArray WithSureCount:policySureCount withModel:walletModel];
     
     
@@ -338,7 +342,7 @@
             return;
         }
     }
-    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithPub:[NSString stringWithFormat:@"%@",textString] withWalletName:self.walletName];
+    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithPub:[NSString stringWithFormat:@"%@",textString] withWalletName:self.walletNameValueLabel.text];
     walletModel.zpubJsonString = extpubkeyJson;
     walletModel.policySureCount = 1;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -378,7 +382,7 @@
             return;
         }
     }
-    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithAddress:textString withWalletName:self.walletName];
+    SHWalletModel *walletModel = [SHBtcCreatOrImportWalletManage importBtcWalletWithAddress:textString withWalletName:self.walletNameValueLabel.text];
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideCustormLoadingWithView:nil];
         [[SHKeyStorage shared] createWalletsWithWalletModel:walletModel];
@@ -491,6 +495,20 @@
             break;
     }
 }
+-(void)walletNameChangeButtonAction:(UIButton *)btn
+{
+    MJWeakSelf;
+    SHAlertView *alertView = [[SHAlertView alloc]initChangeWalletNameWithTitle:GCLocalizedString(@"wallet_name") alert:self.walletNameValueLabel.text sureTitle:GCLocalizedString(@"Yes") sureBlock:^(NSString * _Nonnull str) {
+        if (!IsEmpty(str)) {
+            weakSelf.walletNameValueLabel.text = str;
+        }
+    } cancelTitle:GCLocalizedString(@"No") cancelBlock:^(NSString * _Nonnull str) {
+        
+    }];
+    alertView.subTitleLabel.textColor = SHTheme.errorTipsRedColor;
+    alertView.clooseButton.hidden = YES;
+    [KeyWindow addSubview:alertView];
+}
 #pragma mark 懒加载
 -(UILabel *)importTipsLabel
 {
@@ -583,6 +601,17 @@
         [self.view addSubview:_walletNameValueLabel];
     }
     return _walletNameValueLabel;
+}
+-(UIButton *)walletNameChangeButton
+{
+    if (_walletNameChangeButton == nil) {
+        _walletNameChangeButton = [[UIButton alloc]init];
+        [_walletNameChangeButton setImage:[UIImage imageNamed:@"setWalletPass_walletNameChangeButton"] forState:UIControlStateNormal];
+        _walletNameChangeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        [_walletNameChangeButton addTarget:self action:@selector(walletNameChangeButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:_walletNameChangeButton];
+    }
+    return _walletNameChangeButton;
 }
 -(UIButton *)createButton
 {

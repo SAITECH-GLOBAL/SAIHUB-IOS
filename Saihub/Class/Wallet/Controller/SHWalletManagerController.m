@@ -16,7 +16,7 @@
 #import "SHCompleteView.h"
 #import "SHExportPrivateKeyController.h"
 #import "SHSetPassphraseController.h"
-
+#import "SHNavigationController.h"
 
 @interface SHWalletManagerController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -37,19 +37,19 @@
     
     switch (importType) {
         case SHWalletImportTypeMnemonic: {
-            titleArray = @[GCLocalizedString(@"backup_recovery_phrase"),GCLocalizedString(@"modify_password"), GCLocalizedString(@"touch_id"), GCLocalizedString(@"passphrase_desc"), GCLocalizedString(@"address_manager")];
+            titleArray = @[GCLocalizedString(@"wallet_name"),GCLocalizedString(@"backup_recovery_phrase"),GCLocalizedString(@"modify_password"), GCLocalizedString(@"touch_id"), GCLocalizedString(@"passphrase_desc"), GCLocalizedString(@"address_manager")];
         }
             break;
         case SHWalletImportTypePrivateKey: {
-            titleArray = @[GCLocalizedString(@"backup_private_key"), GCLocalizedString(@"modify_password"), GCLocalizedString(@"touch_id")];
+            titleArray = @[GCLocalizedString(@"wallet_name"),GCLocalizedString(@"backup_private_key"), GCLocalizedString(@"modify_password"), GCLocalizedString(@"touch_id")];
         }
             break;
         case SHWalletImportTypePublicKey: {
-            titleArray = @[GCLocalizedString(@"address_manager")];
+            titleArray = @[GCLocalizedString(@"wallet_name"),GCLocalizedString(@"address_manager")];
         }
             break;
         case SHWalletImportTypeAddress: {
-            titleArray = @[];
+            titleArray = @[GCLocalizedString(@"wallet_name")];
         }
             break;
         default:
@@ -66,19 +66,19 @@
     
     switch (importType) {
         case SHWalletImportTypeMnemonic:{
-            cellTypeArray = @[@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletSwitchCellType),@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType)];
+            cellTypeArray = @[@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletSwitchCellType),@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType)];
         }
             break;
         case SHWalletImportTypePrivateKey: {
-            cellTypeArray = @[@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletSwitchCellType)];
+            cellTypeArray = @[@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType),@(SHManageWalletSwitchCellType)];
         }
             break;
         case SHWalletImportTypePublicKey: {
-            cellTypeArray = @[@(SHManageWalletNoneCellType)];
+            cellTypeArray = @[@(SHManageWalletNoneCellType),@(SHManageWalletNoneCellType)];
         }
             break;
         case SHWalletImportTypeAddress: {
-            cellTypeArray = @[];
+            cellTypeArray = @[@(SHManageWalletNoneCellType)];
         }
             break;
         default:
@@ -139,7 +139,10 @@
     cell.titleLabel.text = self.titleArray[indexPath.row];
     cell.cellType = [self.cellTypeArray[indexPath.row] integerValue];
     cell.switchButton.on = [SHKeyStorage shared].currentWalletModel.isNoSecret;
-    
+    if (indexPath.row == 0) {
+        cell.rightValueLabel.hidden = NO;
+        cell.rightValueLabel.text = [SHKeyStorage shared].currentWalletModel.name;
+    }
     MJWeakSelf
     cell.switchButtonClickBlock = ^(UISwitch * _Nonnull button) {
         [weakSelf pushVerifyPasswordControllerWithButton:button];
@@ -161,6 +164,8 @@
         [self pushRecoveryPhrase];
     } else if ([title isEqualToString:GCLocalizedString(@"address_manager")]) { // 地址管理
         [self pushAddressManager];
+    }else if ([title isEqualToString:GCLocalizedString(@"wallet_name")]) { // 钱包名称
+        [self changeWaleltName];
     }
 }
 
@@ -205,7 +210,25 @@
     
     return height;
 }
-
+#pragma mark -- 修改钱包密码
+-(void)changeWaleltName
+{
+    MJWeakSelf;
+    SHAlertView *alertView = [[SHAlertView alloc]initChangeWalletNameWithTitle:GCLocalizedString(@"wallet_name") alert:[SHKeyStorage shared].currentWalletModel.name sureTitle:GCLocalizedString(@"Yes") sureBlock:^(NSString * _Nonnull str) {
+        if (!IsEmpty(str)) {
+            [[SHKeyStorage shared] updateModelBlock:^{
+                [SHKeyStorage shared].currentWalletModel.name = str;
+            }];
+            [self.tableView reloadData];
+            [MBProgressHUD showSuccess:GCLocalizedString(@"Saved") toView:self.view];
+        }
+    } cancelTitle:GCLocalizedString(@"No") cancelBlock:^(NSString * _Nonnull str) {
+        
+    }];
+    alertView.subTitleLabel.textColor = SHTheme.errorTipsRedColor;
+    alertView.clooseButton.hidden = YES;
+    [KeyWindow addSubview:alertView];
+}
 #pragma mark -- 导出私钥
 - (void)pushPrivateKey {
     MJWeakSelf
@@ -295,9 +318,11 @@
 #pragma mark -- 删除钱包
 -(void)deleatWalletAction
 {
-    if (self.titleArray.count == 0 || [SHKeyStorage shared].currentWalletModel.importType == SHWalletImportTypePublicKey) {
+    if (self.titleArray.count == 1 || [SHKeyStorage shared].currentWalletModel.importType == SHWalletImportTypePublicKey) {
         [[SHKeyStorage shared] deleteWalletWithModel:[SHKeyStorage shared].currentWalletModel];
-        
+        if (IsEmpty([SHKeyStorage shared].currentWalletModel) && [SHKeyStorage shared].currentLNWalletModel) {//有ln钱包
+            [self changehdTolnWalletAction];
+        }
         SHCompleteView *completeView = [[SHCompleteView alloc]init];
         completeView.completeViewType = CompleteViewSucceseType;
         completeView.completeBlock = ^{
@@ -311,9 +336,16 @@
         
     } else {
         SHVerifyPasswordController *verifyPwdVc = [[SHVerifyPasswordController alloc]init];
+        verifyPwdVc.changeWalletBlock = ^{
+            [self changehdTolnWalletAction];
+        };
         verifyPwdVc.controllerType = SHVerifyPasswordControllerDelete;
         [self.navigationController pushViewController:verifyPwdVc animated:YES];
     }
+}
+-(void)changehdTolnWalletAction
+{
+    [SHKeyStorage shared].currentLNWalletModel = [SHKeyStorage shared].currentLNWalletModel;
 }
 #pragma mark -- 开启关闭touchID
 - (void)pushVerifyPasswordControllerWithButton:(UISwitch *)sender {

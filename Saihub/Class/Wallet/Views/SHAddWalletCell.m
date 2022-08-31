@@ -9,7 +9,6 @@
 
 @interface SHAddWalletCell ()
 
-@property (nonatomic, strong) UIImageView *backGroundImageView;
 
 @property (nonatomic, strong) UIImageView *currentImageView;
 
@@ -107,6 +106,7 @@
     
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.backGroundImageView.mas_left).offset(20);
+        make.right.equalTo(self.backGroundImageView.mas_right).offset(-20);
         make.top.mas_equalTo(20);
     }];
     
@@ -149,8 +149,17 @@
     
     self.addressLabel.text = [walletModel.address formatAddressStrLeft:6 right:6];
     
-    self.currentImageView.hidden = !walletModel.isCurrent;
+    self.currentImageView.hidden = [SHKeyStorage shared].isLNWallet?YES:!walletModel.isCurrent;
     
+}
+-(void)setWalletLNModel:(SHLNWalletModel *)walletLNModel
+{
+    _walletLNModel = walletLNModel;
+    self.nameLabel.text = walletLNModel.WalletName;
+
+    self.addressLabel.text = @"";
+
+    self.currentImageView.hidden = ![SHKeyStorage shared].isLNWallet?YES:!walletLNModel.isCurrent;
 }
 
 - (void)setFrame:(CGRect)frame {

@@ -1,1 +1,0 @@
-../../../Bitheri/Bitheri/Bech32/BTSegwitAddrCoder.h

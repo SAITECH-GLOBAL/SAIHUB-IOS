@@ -9,7 +9,7 @@
 #import "CTMediator+SHModule.h"
 #import "SHNavigationController.h"
 #import "SHTabBarController.h"
-
+#import "SHTabBarController.h"
 
 @implementation CTMediator (SHModule)
 
@@ -87,5 +87,34 @@
     }
     return isContain;
 }
+- (void)mediator_changeHDWalletController:(UIViewController *)currentVc {
+    SHNavigationController *nav = [[SHNavigationController alloc]initWithRootViewController:[SHKeyStorage shared].hdWalletVc];
+    nav.tabBarController.tabBar.hidden = YES;
+    [nav setNavigationBarHidden:YES animated:NO];
 
+    NSMutableArray *controllers = [NSMutableArray arrayWithArray:currentVc.tabBarController.viewControllers];
+    if (controllers.count == 0) {
+        return;
+    }
+    [controllers replaceObjectAtIndex:0 withObject:nav];
+    currentVc.tabBarController.viewControllers = controllers;
+    [SHKeyStorage shared].isLNWallet = NO;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:ChangeWalletVc object:nil];
+
+}
+
+- (void)mediator_changeCloudWalletController:(UIViewController *)currentVc {
+    SHNavigationController *nav = [[SHNavigationController alloc]initWithRootViewController:[SHKeyStorage shared].lnWalletVc];
+
+    NSMutableArray *controllers = [NSMutableArray arrayWithArray:currentVc.tabBarController.viewControllers];
+    if (controllers.count == 0) {
+        return;
+    }
+    [controllers replaceObjectAtIndex:0 withObject:nav];
+    currentVc.tabBarController.viewControllers = controllers;
+    [SHKeyStorage shared].isLNWallet = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:ChangeWalletVc object:nil];
+
+}
 @end

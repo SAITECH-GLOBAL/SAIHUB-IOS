@@ -8,6 +8,10 @@
 #import "SHTransferSucceseViewController.h"
 #import "SHTransferValidationTopView.h"
 #import "SHWalletController.h"
+#import "SHTransferValidationForTouchOrFaceViewController.h"
+#import "SHTransferValidationForPassWordViewController.h"
+#import "SHTransferViewController.h"
+#import "SHWalletController.h"
 
 @interface SHTransferSucceseViewController ()
 @property (nonatomic, strong) SHTransferValidationTopView *transferValidationTopView;
@@ -50,16 +54,40 @@
 #pragma mark 按钮事件
 -(void)continueButtonAction:(UIButton *)btn
 {
-    // 转账成功刷新
-    [[NSNotificationCenter defaultCenter] postNotificationName:kTransferSuccessKey object:nil];
-    [self popBackWithClassArray:@[[SHTransactionRecordTotalController class]]];
+    [self pushRecordVc];
 }
+
 -(void)popViewController
 {
-    // 转账成功刷新
-    [[NSNotificationCenter defaultCenter] postNotificationName:kTransferSuccessKey object:nil];
-    [self popBackWithClassArray:@[[SHTransactionRecordTotalController class]]];
+    [self pushRecordVc];
 }
+
+/// 跳转到转账列表
+- (void)pushRecordVc {
+    BOOL containVC = NO;
+    
+    for (UIViewController *controller in self.navigationController.viewControllers) {
+        if ([controller isKindOfClass:[SHTransactionRecordTotalController class]]) {
+            containVC = YES;
+        }
+    }
+    
+    if (containVC == YES) {
+        // 转账成功刷新
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTransferSuccessKey object:nil];
+        [self popBackWithClassArray:@[[SHTransactionRecordTotalController class]]];
+    } else {
+        NSMutableArray *vcs = [NSMutableArray array];
+        [vcs addObject:self.navigationController.viewControllers.firstObject];
+
+        SHTransactionRecordTotalController *recordVc = [[SHTransactionRecordTotalController alloc]init];
+        recordVc.tokenModel = [SHKeyStorage shared].currentWalletModel.tokenList.firstObject;
+        [vcs addObject:recordVc];
+        [self.navigationController pushViewController:recordVc animated:YES];
+        self.navigationController.viewControllers = vcs;
+    }
+}
+
 #pragma mark 懒加载
 -(UIButton *)continueButton
 {

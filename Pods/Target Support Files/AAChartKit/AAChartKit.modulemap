@@ -1,6 +1,0 @@
-module AAChartKit {
-  umbrella header "AAChartKit-umbrella.h"
-
-  export *
-  module * { export * }
-}

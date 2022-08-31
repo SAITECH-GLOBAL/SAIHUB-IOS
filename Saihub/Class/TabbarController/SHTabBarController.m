@@ -12,6 +12,8 @@
 #import "SHPowerController.h"
 #import "SHPoolController.h"
 #import "MainTabBtn.h"
+#import "SHWalletController.h"
+#import "SHLNWalletViewController.h"
 #define BH_IS_IPHONE_X ({\
     BOOL isBangsScreen = NO; \
     if (@available(iOS 11.0, *)) { \
@@ -20,6 +22,7 @@
     } \
     isBangsScreen; \
 })
+
 @interface SHTabBarController ()
 
 /** 主视图 */
@@ -62,16 +65,27 @@
     
     // 3. 添加分类按钮
     [self addItems];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWalletVc) name:ChangeWalletVc object:nil];
 }
 
 #pragma mark - 1. 初始化子控制器
 - (void)setupSubControllers {
-    
+    SHLNWalletViewController *lnWalletVc = [[SHLNWalletViewController alloc] init];
+    SHWalletController *hdWalletVc = [[SHWalletController alloc] init];
+    [SHKeyStorage shared].lnWalletVc = lnWalletVc;
+    [SHKeyStorage shared].hdWalletVc = hdWalletVc;
     NSMutableArray *controllers = [NSMutableArray array];
     
     // 0. 钱包
-    SHNavigationController *nav0 = [[SHNavigationController alloc] initWithRootViewController:[[SHWalletController alloc] init]];
-    [controllers addObject:nav0];
+    if ([SHKeyStorage shared].isLNWallet) {
+        SHNavigationController *nav0 = [[SHNavigationController alloc] initWithRootViewController:lnWalletVc];
+        [controllers addObject:nav0];
+    }else
+    {
+        SHNavigationController *nav0 = [[SHNavigationController alloc] initWithRootViewController:hdWalletVc];
+        [controllers addObject:nav0];
+    }
+
     
     // 1. 矿池
     SHNavigationController *navOne = [[SHNavigationController alloc] initWithRootViewController:[[SHPoolController alloc] init]];
@@ -87,7 +101,10 @@
 
     self.viewControllers = controllers;
 }
-
+-(void)changeWalletVc
+{
+    [self.tabBar bringSubviewToFront:self.mainView];
+}
 #pragma mark - 2. 添加items
 - (void)addItems {
     

@@ -1,1 +1,0 @@
-../../../HWPanModal/Sources/View/HWBackgroundConfig.h

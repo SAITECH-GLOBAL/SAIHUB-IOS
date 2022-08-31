@@ -7,7 +7,8 @@
 
 #import "SHAgreeMentFirsViewController.h"
 #import "SHBtcCreatOrImportWalletManage.h"
-
+#import "SHBottomSelectViewController.h"
+#import "SHCreatLNWalletViewController.h"
 @interface SHAgreeMentFirsViewController ()
 @property (nonatomic, strong) UIImageView *iconImageView;
 @property (nonatomic, strong) UIImageView *backImageView;
@@ -47,7 +48,25 @@
 {
     if (self.selectButton.selected) {
         if (IsEmpty([[NSUserDefaults standardUserDefaults]objectForKey:FirstCreaatOrImportWalletKey])) {
-            [self.navigationController pushViewController:[SHSetWalletPassWordViewController new] animated:YES];
+            SHBottomSelectViewController *selectVc = [[SHBottomSelectViewController alloc]init];
+            selectVc.titleArray = @[GCLocalizedString(@"BTC_Wallet"),GCLocalizedString(@"Lightning_Network")];
+            [self presentPanModal:selectVc];
+            selectVc.selectTitleBlock = ^(NSString * _Nonnull select, NSInteger index) {
+                if (index == 0) {
+                    if ([SHWalletModel allObjects].count >=10) {
+                        [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                        return;
+                    }
+                    [self.navigationController pushViewController:[SHSetWalletPassWordViewController new] animated:YES];
+                }else
+                {
+                    if ([SHLNWalletModel allObjects].count >=10) {
+                        [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+                        return;
+                    }
+                    [self.navigationController pushViewController:[SHCreatLNWalletViewController new] animated:YES];
+                }
+            };
         }
     }
 }

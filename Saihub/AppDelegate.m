@@ -15,14 +15,15 @@
 #import "SHFileManage.h"
 #import "AppDelegate+AppServiceManager.h"
 #import "MJRefreshConfig.h"
+#import "SHLNInvoiceListModel.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self postRefreshToken];
     MJRefreshConfig.defaultConfig.languageCode = KAppSetting.lang;
     [self categoryApplication:application didFinishLaunchingWithOptions:launchOptions];
     sleep(1);
@@ -53,10 +54,24 @@
         }
     }
     [[SHKeyStorage shared] initializeData];
-    
     [self requestRate];
-        
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postRefreshToken) name:@"RefreshTokenKey" object:nil];
     return YES;
+}
+#pragma mark //刷新ln钱包token
+-(void)postRefreshToken
+{
+    [[NetWorkTool shareNetworkTool] requestBaseUrlForCheckContractHttpwithHeader:@{} WithPath:[NSString stringWithFormat:@"%@/auth?type=refresh_token",[SHKeyStorage shared].currentLNWalletModel.hostUrl] withMethodType:Post withParams:@{@"refresh_token":[SHKeyStorage shared].currentLNWalletModel.refresh_token} result:^(id  _Nullable resultData, NSInteger resultCode, NSString *resultMessage) {
+        if (resultCode == 0) {
+            if ([[resultData class]isEqual:[NSDictionary class] ]&&[resultData[@"message"]isEqualToString:@"bad auth"]) {
+                return;
+            }
+            [[SHKeyStorage shared] updateModelBlock:^{
+                [SHKeyStorage shared].currentLNWalletModel.refresh_token = resultData[@"refresh_token"];
+                [SHKeyStorage shared].currentLNWalletModel.access_token = resultData[@"access_token"];
+            }];
+        }
+    }];
 }
 
 #pragma mark -- 获取汇率

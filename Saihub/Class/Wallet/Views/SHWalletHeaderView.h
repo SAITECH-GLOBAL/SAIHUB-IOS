@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SHWalletHeaderView : UIView
 
 @property (nonatomic, strong) SHWalletModel *walletModel;
+/// 钱包名
+@property (nonatomic,strong) UILabel *walletNameLabel;
 
 /// 地址
 @property (nonatomic,strong) UILabel *addressLabel;

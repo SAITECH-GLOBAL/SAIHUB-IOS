@@ -32,23 +32,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.backButton setImage:[UIImage imageNamed:@"baseController_whiteBack"] forState:UIControlStateNormal];
-
-    self.titleLabel.text = GCLocalizedString(@"scan");
+    self.titleLabel.text = GCLocalizedString(@"Scan_LNDHub");
     self.titleLabel.textColor = [UIColor whiteColor];
     self.navBar.backgroundColor = [UIColor clearColor];
     [self initQrCodeScanning];
-    [self.photoButton setTitle:GCLocalizedString(@"album") forState:UIControlStateNormal];
-    [self.photoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.photoButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(-16);
-        make.centerY.equalTo(self.titleLabel);
-    }];
+    
     
     CGFloat imageX = kScreenWidth *0.175;
     CGFloat imageY = kScreenWidth *0.4 + kNaviBarHeight + kStatusBarHeight;
 
     // 扫描框中的四个边角的背景图
-    UIImageView *scanImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]];
+    UIImageView *scanImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scan_icon"]];
     scanImage.frame = CGRectMake(imageX, imageY, kScreenWidth *0.65, kScreenWidth *0.65);
     [self.view addSubview:scanImage];
     
@@ -57,27 +51,39 @@
     activeImage.frame = CGRectMake(imageX, imageY, kScreenWidth *0.65, 4);
     [self.view addSubview:activeImage];
     self.activeImage = activeImage;
-    
-    UILabel *tipLabel = [[UILabel alloc]init];
-    tipLabel.textColor = [UIColor whiteColor];
-    tipLabel.text = GCLocalizedString(@"scan_qrCode");
-    tipLabel.font = KCustomRegularFont(14);
-    [self.view addSubview:tipLabel];
-    [tipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(0);
-        make.top.equalTo(scanImage.mas_bottom).offset(19);
-        make.width.mas_lessThanOrEqualTo(250 *FitWidth);
+    self.photoButton = [[UIButton alloc]init];
+    [self.photoButton setImage:[UIImage imageNamed:@"scan_openPhoto"] forState:UIControlStateNormal];
+    [self.view addSubview:self.photoButton];
+    self.photoButton.layer.cornerRadius = 26;
+    self.photoButton.layer.masksToBounds = YES;
+    self.photoButton.backgroundColor = rgba(255, 255, 255, 0.2);
+    [self.photoButton addTarget:self action:@selector(photoButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.photoButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(scanImage.mas_bottom).offset(100);
+        make.centerX.equalTo(self.titleLabel);
+        make.width.height.offset(52);
     }];
+    
+//    UILabel *tipLabel = [[UILabel alloc]init];
+//    tipLabel.textColor = [UIColor whiteColor];
+//    tipLabel.text = GCLocalizedString(@"scan_qrCode");
+//    tipLabel.font = KCustomRegularFont(14);
+//    [self.view addSubview:tipLabel];
+//    [tipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.centerX.mas_equalTo(0);
+//        make.top.equalTo(scanImage.mas_bottom).offset(19);
+//        make.width.mas_lessThanOrEqualTo(250 *FitWidth);
+//    }];
 //    //添加全屏的黑色半透明蒙版
-//    UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//    maskView.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.5];
-//    [self.view insertSubview:maskView belowSubview:self.navBar];
-//    //从蒙版中扣出扫描框那一块,这块的大小尺寸将来也设成扫描输出的作用域大小
-//    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRect:self.view.bounds];
-//    [maskPath appendPath:[[UIBezierPath bezierPathWithRect:CGRectMake(imageX, imageY, kScreenWidth *0.65, kScreenWidth *0.65)] bezierPathByReversingPath]];
-//    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
-//    maskLayer.path = maskPath.CGPath;
-//    maskView.layer.mask = maskLayer;
+    UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    maskView.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.5];
+    [self.view insertSubview:maskView belowSubview:self.navBar];
+    //从蒙版中扣出扫描框那一块,这块的大小尺寸将来也设成扫描输出的作用域大小
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRect:self.view.bounds];
+    [maskPath appendPath:[[UIBezierPath bezierPathWithRect:CGRectMake(imageX, imageY, kScreenWidth *0.65, kScreenWidth *0.65)] bezierPathByReversingPath]];
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+    maskLayer.path = maskPath.CGPath;
+    maskView.layer.mask = maskLayer;
     
     // 判断相机权限
     if ([JLAccessAuthorityTool isOpenCameraAuthority] == NO) return;

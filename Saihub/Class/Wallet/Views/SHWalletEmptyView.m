@@ -7,7 +7,7 @@
 
 #import "SHWalletEmptyView.h"
 #import "SHSetWalletPassWordViewController.h"
-
+#import "SHCreatLNWalletViewController.h"
 @interface SHWalletEmptyView ()
 
 @property (nonatomic, strong) UIImageView *backgroundImageView;
@@ -116,8 +116,22 @@
 
 /// 添加钱包
 - (void)addWalletEvent {
-    SHSetWalletPassWordViewController *setWalletPwdVc = [[SHSetWalletPassWordViewController alloc]init];
-    [[CTMediator sharedInstance].topViewController.navigationController pushViewController:setWalletPwdVc animated:YES];
+
+    
+    if ([SHKeyStorage shared].isLNWallet) {
+        if ([SHLNWalletModel allObjects].count >=10) {
+            [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+            return;
+        }
+        [[CTMediator sharedInstance].topViewController.navigationController pushViewController:[SHCreatLNWalletViewController new] animated:YES];
+    }else
+    {
+        if ([SHWalletModel allObjects].count >=10) {
+            [MBProgressHUD  showError:GCLocalizedString(@"wallet_num_tip") toView:nil];
+            return;
+        }
+        [[CTMediator sharedInstance].topViewController.navigationController pushViewController:[SHSetWalletPassWordViewController new] animated:YES];
+    }
 }
 
 @end

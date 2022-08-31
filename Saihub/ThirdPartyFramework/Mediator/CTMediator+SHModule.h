@@ -17,6 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 判断栈中是否包含该控制器
 - (BOOL)containController:(Class )controllerClass;
+
+/// 切换到本地钱包
+/// @param currentVc 当前控制器
+- (void)mediator_changeHDWalletController:(UIViewController *)currentVc;
+
+
+/// 切换到LN钱包
+/// @param currentVc 当前控制器
+- (void)mediator_changeCloudWalletController:(UIViewController *)currentVc;
 @end
 
 NS_ASSUME_NONNULL_END

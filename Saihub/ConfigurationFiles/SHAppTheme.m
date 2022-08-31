@@ -42,6 +42,12 @@
 @property (nonatomic, strong, readwrite) UIColor *pendingTextColor;
 @property (nonatomic, strong, readwrite) UIColor *errorTipsRedAlphaColor;
 @property (nonatomic, strong, readwrite) UIColor *appBlackWithAlphaColor;
+@property (nonatomic, strong, readwrite) UIColor *lnWalletButtonColor;
+@property (nonatomic, strong, readwrite) UIColor *lnWalletButtonBgColor;
+@property (nonatomic, strong, readwrite) UIColor *lnWalletInvoiceImageBgColor;
+@property (nonatomic, strong, readwrite) UIColor *switchDisableColor;
+
+
 @end
 
 static id _appTheme;
@@ -95,6 +101,10 @@ static id _appTheme;
     self.pendingTextColor = UIColorHex(#026FED);
     self.errorTipsRedAlphaColor = rgba(255, 55, 80, 0.1);
     self.appBlackWithAlphaColor = rgba(0, 0, 0, 0.65);
+    self.lnWalletButtonColor = UIColorHex(#414141);
+    self.lnWalletButtonBgColor = UIColorHex(#FFF0D6);
+    self.lnWalletInvoiceImageBgColor = UIColorHex(#E5F0FD);
+    self.switchDisableColor = UIColorHex(#E8EBEF);
 }
 
 

@@ -590,4 +590,43 @@
 //    return timeSp;
 
 }
++(NSString *)randomStringWithLength:(NSInteger)len {
+     NSString *letters = @"abcdefghijklmnopqrstuvwxyz";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (NSInteger i = 0; i < len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform([letters length])]];
+    }
+    return randomString;
+}
++ (NSString*)removeFloatAllZeroByString:(NSString *)testNumber{
+
+       // /*---------第一种方法-----------*/
+
+        NSString * s = nil;
+
+        NSInteger offset = testNumber.length - 1;
+
+       
+
+        while (offset){
+
+        s = [testNumber substringWithRange:NSMakeRange(offset, 1)];
+
+        if ([s isEqualToString:@"0"] || [s isEqualToString:@"."]){
+
+        offset--;
+
+        }else{
+
+        break;
+
+        }
+
+        }
+
+        NSString * outNumber = [testNumber substringToIndex:offset+1];
+
+       return outNumber;
+
+}
 @end

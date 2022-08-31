@@ -687,7 +687,14 @@
                     [MBProgressHUD showError:GCLocalizedString(@"Lack_balance") toView:self.view];
                     return;
                 }
-                NSString *jsStr = [NSString stringWithFormat:@"createHDTransaction('%@',%@,'%@',%@,'%@',%@,%@)",[SHKeyStorage shared].currentWalletModel.mnemonic,strJson,self.toAddressTf.text,[valueNum decimalNumberByMultiplyingBy:powNum].stringValue,[SHKeyStorage shared].currentWalletModel.changeAddressList[0].address,sat,@"true"];
+                
+                NSString *jsStr ;
+                if ([SHKeyStorage shared].currentWalletModel.passPhrase.length != 0) {
+                    jsStr = [NSString stringWithFormat:@"createHDTransaction('%@',%@,'%@',%@,'%@',%@,%@,'%@')",[SHKeyStorage shared].currentWalletModel.mnemonic,strJson,self.toAddressTf.text,[valueNum decimalNumberByMultiplyingBy:powNum].stringValue,[SHKeyStorage shared].currentWalletModel.changeAddressList[0].address,sat,@"true",[SHKeyStorage shared].currentWalletModel.passPhrase];
+                } else {
+                    jsStr = [NSString stringWithFormat:@"createHDTransaction('%@',%@,'%@',%@,'%@',%@,%@)",[SHKeyStorage shared].currentWalletModel.mnemonic,strJson,self.toAddressTf.text,[valueNum decimalNumberByMultiplyingBy:powNum].stringValue,[SHKeyStorage shared].currentWalletModel.changeAddressList[0].address,sat,@"true"];
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.wkWebView evaluateJavaScript:jsStr completionHandler:^(id _Nullable result, NSError * _Nullable error) {
                         NSLog(@"%@",result);
@@ -1247,6 +1254,7 @@
         _toAddressTf.placeholder = GCLocalizedString(@"et_address_hint");
         _toAddressTf.font = kCustomMontserratRegularFont(14);
         _toAddressTf.clearButtonMode = UITextFieldViewModeAlways;
+        _toAddressTf.text = IsEmpty(self.address)?@"":self.address;
         //        _toAddressTf.secureTextEntry = YES;
         [_toAddressTf addTarget:self action:@selector(textFieldChanged:) forControlEvents:UIControlEventEditingChanged];
         [self.view addSubview:_toAddressTf];
@@ -1438,4 +1446,6 @@
     self.wkWebView.navigationDelegate = nil;
     [self.wkWebView removeFromSuperview];
 }
+
+
 @end

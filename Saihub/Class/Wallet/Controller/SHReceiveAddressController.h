@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SHReceiveAddressController : SHBaseViewController
 
 @property (nonatomic, copy) NSString *address;
-
+@property (nonatomic, assign) BOOL isLnAddress;
 @end
 
 NS_ASSUME_NONNULL_END

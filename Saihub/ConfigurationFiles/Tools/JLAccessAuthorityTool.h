@@ -14,19 +14,9 @@ typedef void(^SucessedBlock)(BOOL isSuccess);
 //访问权限工具类
 @interface JLAccessAuthorityTool : NSObject
 /**
- *  授权相机
- */
-+(BOOL)videoAuthAction;
-
-/**
  *  授权麦克风
  */
 +(BOOL)audioAuthAction;
-/**
- *  麦克风权限
- */
-
-+(BOOL) checkAudioStatus;
 /**
  *  相机权限
  */
@@ -45,14 +35,6 @@ typedef void(^SucessedBlock)(BOOL isSuccess);
  *  @return bool
  */
 + (BOOL)isOpenAlbumAuthority;
-/**
- *  是否开启了定位权限
- *
- *  @return bool
- */
-+ (BOOL)isOpenLocationAuthority;
-
-+(void)requestAuthorizationAddressBookWithBlock:(SucessedBlock)sucessedBlock;
 
 
 +(BOOL)isOpenMicoAuthority;

@@ -55,7 +55,24 @@ static id _keyStorage;
 - (RLMRealm *)realm {
     return [RLMRealm defaultRealm];
 }
+@dynamic isLNWallet;
+- (void)setIsLNWallet:(BOOL)isLNWallet {
+    if (self.isLNWallet &&!isLNWallet) {
+        [SHFileManage savePreferencesData:@(isLNWallet) forKey:kIsLNWalletKey];
+        [[CTMediator sharedInstance] mediator_changeHDWalletController:[SHKeyStorage shared].lnWalletVc];
 
+    }else if (!self.isLNWallet &&isLNWallet)
+    {
+        [SHFileManage savePreferencesData:@(isLNWallet) forKey:kIsLNWalletKey];
+        [[CTMediator sharedInstance] mediator_changeCloudWalletController:[SHKeyStorage shared].hdWalletVc];
+    }
+    [SHFileManage savePreferencesData:@(isLNWallet) forKey:kIsLNWalletKey];
+
+}
+
+- (BOOL)isLNWallet {
+    return [[SHFileManage readPreferencesDataForKey:kIsLNWalletKey] boolValue];
+}
 + (instancetype)shared {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -158,11 +175,20 @@ static id _keyStorage;
     
     self.socketAPI.handleType = SocketQuerySubscribeType;
     [[SHWebSocketManager sharedManager] querySubscribeDataWithApi:self.socketAPI];
-    
+
     // 上报地址请求接口
     [[SHWalletNetManager shared] postAddressArray:postArray];
 }
+/// 创建单个LN钱包
+- (void)createLNWalletsWithWalletModel:(SHLNWalletModel *)walletModel
+{
+    walletModel.isCurrent = YES;
 
+    [self.realm transactionWithBlock:^{
+        [self.realm addObject:walletModel];
+    }];
+    self.currentLNWalletModel = walletModel;
+}
 #pragma mark -- 1.1 更新操作
 - (void)updateModelBlock:(void (^)(void))block {
     [self.realm transactionWithBlock:block];
@@ -208,7 +234,25 @@ static id _keyStorage;
         self.currentWalletModel = nil;
     }
 }
+/// 删除LN钱包
+- (void)deleteLNWalletWithModel:(SHLNWalletModel *)model
+{
+    // 删除模型
+    [self updateModelBlock:^{
+        [self.realm deleteObject:model];
+    }];
 
+    // 根据时间倒序排序
+    RLMResults *timeResult = [[SHLNWalletModel allObjects] sortedResultsUsingKeyPath:@"createTimestamp" ascending:NO];
+
+    if (timeResult.count > 0) {
+        SHLNWalletModel *walletModel = (SHLNWalletModel *)timeResult.firstObject;
+        self.currentLNWalletModel = walletModel;
+    } else {
+        // 当前已没有钱包
+        self.currentLNWalletModel = nil;
+    }
+}
 #pragma mark -- 1.4 查询钱包
 - (NSArray<SHWalletModel *> *)queryWalletWithType:(SHWalletType)type {
     NSMutableArray *arrayM = [NSMutableArray array];
@@ -218,7 +262,19 @@ static id _keyStorage;
     }
     return arrayM;
 }
-
+#pragma mark -- 1.4.1 查询全部可转账的本地钱包
+- (NSArray<SHWalletModel *> *)queryWalletCanTransfer {
+    NSMutableArray *arrayM = [NSMutableArray array];
+    RLMResults<SHWalletModel *> *wallets = [SHWalletModel allObjects];
+    for (SHWalletModel *model in wallets) {
+        if (model.importType == SHWalletImportTypeAddress||(model.importType == SHWalletImportTypePublicKey && IsEmpty(model.zpubJsonString)&&IsEmpty(model.zpubList))) {
+        }else
+        {
+            [arrayM addObject:model];
+        }
+    }
+    return arrayM;
+}
 #pragma mark -- 1.5 删除集合
 - (void)removeArray:(NSArray <RLMObject *> *) array {
     [self updateModelBlock:^{
@@ -253,12 +309,32 @@ static id _keyStorage;
             oldModel.isCurrent = NO;
         }];
     }
-    
+    [SHKeyStorage shared].isLNWallet = NO;
     [SHBtcCreatOrImportWalletManage changeBtcHdWalletWithModel:currentWalletModel];
 }
 
 - (SHWalletModel *)currentWalletModel {
     RLMResults *result = [SHWalletModel objectsWhere:@"isCurrent = true"];
+    return result.firstObject; // 注意 : 当前选中,有且仅有一个
+}
+@dynamic currentLNWalletModel;
+- (void)setCurrentLNWalletModel:(SHLNWalletModel *)currentLNWalletModel {
+    SHLNWalletModel *oldModel = [self currentLNWalletModel];
+    if (![currentLNWalletModel isEqualToObject:oldModel]) { //如果钱包模型相同,则不需要更新
+        [self.realm transactionWithBlock:^{
+            currentLNWalletModel.isCurrent = YES;
+            oldModel.isCurrent = NO;
+        }];
+    }
+    [SHKeyStorage shared].isLNWallet = YES;
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"RefreshTokenKey" object:nil];
+
+//    [SHBtcCreatOrImportWalletManage changeBtcHdWalletWithModel:currentLNWalletModel];
+}
+
+-(SHLNWalletModel *)currentLNWalletModel
+{
+    RLMResults *result = [SHLNWalletModel objectsWhere:@"isCurrent = true"];
     return result.firstObject; // 注意 : 当前选中,有且仅有一个
 }
 

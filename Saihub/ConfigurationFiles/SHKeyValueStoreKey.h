@@ -16,5 +16,8 @@ static NSString *const kRateDictKey = @"kRateDictKey";
 
 static NSString *const kClickPushSaveKey = @"kClickPushSaveKey";
 
+///是否是ln钱包
+static NSString *const kIsLNWalletKey = @"kIsLNWalletKey";
+
 
 #endif /* SHKeyValueStoreKey_h */

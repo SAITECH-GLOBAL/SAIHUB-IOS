@@ -164,7 +164,7 @@ static id _networkTool;
             NSString *xsign = [NSString sha1:xSignMStr];
 
             NSString *url = [NSString stringWithFormat:@"%@",path];
-            return [manager POST:url parameters:params headers:nil progress:^(NSProgress * _Nonnull uploadProgress) {
+            return [manager POST:url parameters:params headers:@{@"x-sign":xsign} progress:^(NSProgress * _Nonnull uploadProgress) {
                 
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 SHBaseResponseModel *responseModel = [SHBaseResponseModel modelWithJSON:responseObject];
@@ -255,7 +255,11 @@ static id _networkTool;
             //url拼接的签名
             NSString *signString = [NSString signString:signPara];
             NSString *url = IsEmpty(signString)?[NSString stringWithFormat:@"%@",path]:[NSString stringWithFormat:@"%@?%@",path,signString];
-            return [manager GET:url parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+            NSMutableDictionary *headerDic = [NSMutableDictionary new];
+            if ([params.allKeys containsObject:@"Authorization"]) {
+                [headerDic setValue:params[@"Authorization"] forKey:@"Authorization"];
+            }
+            return [manager GET:url parameters:nil headers:headerDic progress:^(NSProgress * _Nonnull downloadProgress) {
                 
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 NSLog(@"网络请求成功 url =%@ 参数 =\n%@  响应 =\n%@",url,params,responseObject);
@@ -313,7 +317,137 @@ static id _networkTool;
             NSString *xsign = [NSString sha1:xSignMStr];
 
             NSString *url = [NSString stringWithFormat:@"%@",path];
-            return [manager POST:url parameters:params headers:nil progress:^(NSProgress * _Nonnull uploadProgress) {
+            NSMutableDictionary *headerDic = [NSMutableDictionary new];
+            if ([params.allKeys containsObject:@"Authorization"]) {
+                [headerDic setValue:params[@"Authorization"] forKey:@"Authorization"];
+            }
+            return [manager POST:url parameters:params headers:headerDic progress:^(NSProgress * _Nonnull uploadProgress) {
+                
+            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"网络请求成功 url =%@ 参数 =\n%@  响应 =\n%@",url,params,responseObject);
+
+                if (responseObject != nil) { //如果是正确的数据格式
+                    if (block) {
+                        block(responseObject,0,@"");
+                    }
+                } else {
+                    if (block) {
+                        block(nil,3840,@"未能读取到数据，因为不是正确的数据格式");
+                    }
+                }
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"网络请求失败 url =%@ 参数 =\n%@  响应 =\n%@",url,params,error);
+                if (block) {
+                    block(nil,error.code,error.localizedDescription);
+                }
+            }];
+        }
+            break;
+        default:
+            return nil;
+            break;
+    }
+}
+
+- (NSURLSessionDataTask *)requestBaseUrlForCheckContractHttpwithHeader:(NSDictionary*)Header WithPath:(NSString *)path withMethodType:(NetworkMethod)method withParams:(NSDictionary*)params result:(ResultBlock)block
+{
+    if (!path || path.length <= 0) {
+        return nil;
+    }
+    path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    switch (method) {
+        case Get:
+        {
+            AFSecurityPolicy *securityPolicy = [[AFSecurityPolicy alloc] init];
+            [securityPolicy setAllowInvalidCertificates:YES];
+            securityPolicy.validatesDomainName = NO;
+            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            [manager setSecurityPolicy:securityPolicy];
+            //请求
+            [manager.requestSerializer setQueryStringSerializationWithBlock:^NSString * _Nonnull(NSURLRequest * _Nonnull request, id  _Nonnull parameters, NSError * _Nullable __autoreleasing * _Nullable error) {
+                return parameters;
+            }];
+            //响应
+            manager.responseSerializer = [AFJSONResponseSerializer serializer];
+            //设置响应数据格式
+            [manager.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",@"text/plain", nil]];
+            //拼接url
+            NSMutableDictionary *signPara = [NSMutableDictionary new];
+            [signPara addEntriesFromDictionary:params];
+            
+            NSMutableDictionary *xSignDict = [NSMutableDictionary dictionary];
+            [signPara enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                NSString *value = @"";
+                if ([obj isKindOfClass:[NSString class]]) {
+                   value = [obj stringByReplacingOccurrencesOfString:@" " withString:@""];
+                    [xSignDict setValue:value forKey:key];
+                } else {
+                    [xSignDict setValue:obj forKey:key];
+                }
+            }];
+            //url拼接的签名
+            NSString *signString = [NSString signString:signPara];
+            NSString *url = IsEmpty(signString)?[NSString stringWithFormat:@"%@",path]:[NSString stringWithFormat:@"%@?%@",path,signString];
+
+            return [manager GET:url parameters:nil headers:Header progress:^(NSProgress * _Nonnull downloadProgress) {
+                
+            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"网络请求成功 url =%@ 参数 =\n%@  响应 =\n%@",url,params,responseObject);
+                if (responseObject != nil) { //如果是正确的数据格式
+                    if (block) {
+                        block(responseObject,0,@"");
+                    }
+            }else {
+                if (block) {
+                    block(nil,3840,@"未能读取到数据，因为不是正确的数据格式");
+                }
+            }
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"网络请求失败 url =%@ 参数 =\n%@  响应 =\n%@",url,params,error);
+                if (block) {
+                    block(nil,error.code,error.localizedDescription);
+                }
+            }];
+        }
+            break;
+        case Post: {
+            AFSecurityPolicy *securityPolicy = [[AFSecurityPolicy alloc] init];
+            [securityPolicy setAllowInvalidCertificates:YES];
+            securityPolicy.validatesDomainName = NO;
+            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            [manager setSecurityPolicy:securityPolicy];
+            //请求
+            manager.requestSerializer = [AFJSONRequestSerializer serializer];
+            //响应
+            manager.responseSerializer = [AFJSONResponseSerializer serializer];
+            //设置响应数据格式
+            [manager.responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",@"text/plain", nil]];
+            //拼接url
+            NSMutableDictionary *signPara = [self signPara];
+            
+            NSMutableDictionary *xSignDict = [NSMutableDictionary dictionary];
+            [signPara enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                NSString *value = @"";
+                if ([obj isKindOfClass:[NSString class]]) {
+                   value = [obj stringByReplacingOccurrencesOfString:@" " withString:@""];
+                    [xSignDict setValue:value forKey:key];
+                } else {
+                    [xSignDict setValue:obj forKey:key];
+                }
+            }];
+            //url拼接的签名
+            NSString *signString = [NSString signString:signPara];
+            NSMutableString *string = [NSMutableString stringWithString:signString];
+            [string appendString:API_SECRET];
+            
+            //xsign拼接
+            NSString *xSignStr = [NSString signString:xSignDict];
+            NSMutableString *xSignMStr = [NSMutableString stringWithString:xSignStr];
+            [xSignMStr appendString:API_SECRET];
+            NSString *xsign = [NSString sha1:xSignMStr];
+
+            NSString *url = [NSString stringWithFormat:@"%@",path];
+            return [manager POST:url parameters:params headers:Header progress:^(NSProgress * _Nonnull uploadProgress) {
                 
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 NSLog(@"网络请求成功 url =%@ 参数 =\n%@  响应 =\n%@",url,params,responseObject);

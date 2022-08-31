@@ -359,9 +359,51 @@
 "networkErrorTitle" = "Обновить";
 
 "Backup_delete_confirm_title"="Создавайте резервные копии своих стипендий, чтобы предотвратить потерю активов.";
+"wallet_ln"="Молниеносный кошелек";
 
 
 
+"Refill_Local_Wallet"="Пополнение местного кошелька";
+"Refill_External_Wallet"="Пополнение с внешним кошельком";
+"BTC_Wallet"="BTC-кошелек";
+"Lightning_Network"="Lightning Network";
+"Expires_in"="Действителен до";
+"Expired"="Просроченный";
+"Expires_in_With"="Действителен до：";
+"Potential_Fee"="Потенциальная плата：";
+"Refill"="Пополнить";
+"Host" = "Узлы";
+"Add_Lightning"="Добавить кошелек Lightning";
+"Memo"="Памятка";
+"Create_Invoice"="Создать invoice";
+"please_pay"="Пожалуйста, заплатите：";
+"stas_for"="sats for：";
+"Please_backup_first" ="Сначала резервное копирование, пожалуйста" ;
+"Lightning_payment"="Lightning payment";
+"Lightning_invoice"="Lightning invoice";
+"On-chain"="On-chain";
+
+"No_Wallet"="Нет местного кошелька";
+"Lightning_Settings"="Настройки молнии";
+"Import_Lightning"="Импорт Lightning";
+"Save"="Сохранить";
+"Export"="Экспорт";
+"Invoice/Lightning Address"="Invoice/Lightning Address";
+"Pay"="Платежи";
+"Import_failed"="Сбой импорта";
+"Import_successfully"="Успешно импортируется";
+"Payment_successful"="Успешная оплата";
+"Saved"="Сохранено";
+"sats"="sats";
+"Enter_memo"="Введите примечание";
+"Scan_LNDHub"="Сканирование LNDHub";
+"Enter_LNDHub"="Войти в LNDhub";
+"Enter_host"="Пожалуйста, введите узел";
+"Enter_wallet_name"="Пожалуйста, введите имя";
+"Host_error"="Ошибка хоста";
 
 
-
+"Wallet_Type"="Тип кошелька";
+"Lightning_Address"="Адрес молнии";
+"input_paste_hostUrl"="Введите или вставьте адрес";
+"Select_type"="выбрать тип";

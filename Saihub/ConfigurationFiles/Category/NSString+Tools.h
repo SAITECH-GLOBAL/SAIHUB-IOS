@@ -101,6 +101,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDecimalNumber *)numberValueString:(NSString *)value decimal:(NSString *)decimal isPositive:(BOOL)isPositive ;
 ///获取当前时间的时间戳
 + (NSInteger)getTimestampFromTime;
+
++(NSString *)randomStringWithLength:(NSInteger)len ;
+
++ (NSString*)removeFloatAllZeroByString:(NSString *)testNumber;
+
 @end
 
 NS_ASSUME_NONNULL_END
